@@ -10,5 +10,5 @@ No files in this folder will be tracked
 ## Datasets
 | Dataset Name | Dataset Filename | Download Link |
 | --- | --- | --- |
-| Zip Code Data | incom-data.csv | [Site](https://www.irs.gov/uac/soi-tax-stats-individual-income-tax-statistics-zip-code-data-soi)
+| Zip Code Data | income-data.csv | [Site](https://www.irs.gov/uac/soi-tax-stats-individual-income-tax-statistics-zip-code-data-soi)
 | Starbucks Locations | starbucks.csv | [Site](https://www.kaggle.com/starbucks/store-locations)
