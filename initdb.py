@@ -13,12 +13,12 @@ from mysql.connector import errorcode
 # Define constants
 DB_NAME = "starbucksdb"
 
-TABLES = {}
+TABLES = dict()
 # Create table statments
 # replace with own schema
 
 # https://www.kaggle.com/starbucks/store-locations
-TABLES['locations']=(
+TABLES['locations'] = (
     "CREATE TABLE `locations` ("
     "   `brand` varchar(15) NOT NULL,"
     "   `store_number` varchar(20) NOT NULL,"
@@ -49,19 +49,21 @@ TABLES['diversity'] = (
     "   `white_only` decimal(4,2) NOT NULL"
     ") ENGINE=InnoDB")
 
+
 def create_database(cursor, connection):
     """
     Attempt to create the DB_NAME database
     """
     try:
-       create_sda_db = "CREATE DATABASE {}".format(DB_NAME)
-       print("Creating database {}".format(DB_NAME))
-       cursor.execute(create_sda_db)
+        create_sda_db = "CREATE DATABASE {}".format(DB_NAME)
+        print("Creating database {}".format(DB_NAME))
+        cursor.execute(create_sda_db)
     except mysql.connector.Error as mysqlError:
         print("Failed creating database: {}".format(mysqlError))
         sys.exit()
     # commit transactions
     connection.commit()
+
 
 def connect_to_database(connection):
     """
@@ -75,6 +77,7 @@ def connect_to_database(connection):
         else:
             print(mysqlError)
         sys.exit()
+
 
 def create_tables(cursor, connection):
     """
@@ -97,7 +100,7 @@ def create_tables(cursor, connection):
                 print(mysqlError.msg)
         else:
             print("OK")
-            
+
         # commit transactions
         connection.commit()
 
@@ -110,22 +113,21 @@ password = input("Password: ")
 # Connect to the MySQL server with user credentials
 try:
     mysql_connection = mysql.connector.connect(user=username,
-                                           password=password)
+                                               password=password)
 except mysql.connector.Error as err:
     if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
         print("Username or Password was incorrect.")
     else: print(err)
 
 # Get cursor from server connection
-cursor = mysql_connection.cursor()
+connection_cursor = mysql_connection.cursor()
 # Set autocommit to false for batch
 mysql_connection.autocommit = False
 # Create database
-create_database(cursor, mysql_connection)
+create_database(connection_cursor, mysql_connection)
 # Create tables
-create_tables(cursor, mysql_connection)
+create_tables(connection_cursor, mysql_connection)
 # Close cursor
-cursor.close()
+connection_cursor.close()
 # Close connection
 mysql_connection.close()
-print("Done")
