@@ -6,9 +6,6 @@
 # 5) commit transactoins
 # 6) exit
 
-
-
-
 import sys
 import mysql.connector
 from mysql.connector import errorcode
@@ -52,9 +49,6 @@ TABLES['diversity'] = (
     "   `white_only` decimal(4,2) NOT NULL"
     ") ENGINE=InnoDB")
 
-
-
-
 def create_database(cursor, connection):
     """
     Attempt to create the DB_NAME database
@@ -86,8 +80,9 @@ def create_tables(cursor, connection):
     """
     Attempt to execute each CREATE statement in TABLES
     to create tables.
-    NOTE: MUST BE CONNECTED TO A DB FIRST
     """
+    # Connect to database
+    connect_to_database(connection)
     for name, query in TABLES.items():
         try:
             print("Creating table {}: ".format(name), end='')
@@ -105,7 +100,6 @@ def create_tables(cursor, connection):
             
         # commit transactions
         connection.commit()
-
 
 
 # Get username and password for desired account
@@ -128,11 +122,8 @@ cursor = mysql_connection.cursor()
 mysql_connection.autocommit = False
 # Create database
 create_database(cursor, mysql_connection)
-# Connect to database
-connect_to_database(mysql_connection)
 # Create tables
 create_tables(cursor, mysql_connection)
-
 # Close cursor
 cursor.close()
 # Close connection
