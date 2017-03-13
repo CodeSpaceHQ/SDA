@@ -8,7 +8,11 @@
 
 import sys
 import mysql.connector
+import db
 from mysql.connector import errorcode
+
+# Start up a database instance
+db.startUp()
 
 # Define constants
 DB_NAME = "starbucksdb"
@@ -131,3 +135,5 @@ create_tables(connection_cursor, mysql_connection)
 connection_cursor.close()
 # Close connection
 mysql_connection.close()
+# Stopping the database instance
+db.stop()
