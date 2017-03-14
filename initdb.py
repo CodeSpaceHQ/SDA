@@ -135,5 +135,3 @@ create_tables(connection_cursor, mysql_connection)
 connection_cursor.close()
 # Close connection
 mysql_connection.close()
-# Stopping the database instance
-db.stop()
