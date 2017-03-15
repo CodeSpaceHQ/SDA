@@ -9,7 +9,9 @@ No files in this folder will be tracked
 
 ## Datasets
 ### Income Dataset
-Dataset Filename: `income-data.csv`  
+_ 2013 Tax Income Statistics_   
+Dataset Filename: `income-data.csv`    
+UID: ZIPCODE
 
 | Attribute    | Type | Description |
 | ---          | ---  | ---         |
@@ -31,9 +33,19 @@ AGI_STUB:
 
 > [Source](https://www.irs.gov/uac/soi-tax-stats-individual-income-tax-statistics-zip-code-data-soi)
 
+### Starbucks Locations Dataset
+_ All the US Starbucks Locations _  
+Dataset Filename: `starbucks.csv`    
+UID: STORE_NUMBER
+
+| Attribute    | Type | Description          |
+| ---          | ---  | ---                  |
+| STORE_NUMBER | Char | Two sets of numbers separated by '-'      |
+| CITY         | Char | |
+| STATE        | Char | Two-digit State abbreviation code  |
+| ZIPCODE      | Char | |
+| LONG         | Char | Longitude |
+| LAT          | Char | Latitude |
 
 
-| Dataset Name | Dataset Filename | Download Link |
-| --- | --- | --- |
-| Zip Code Data | income-data.csv | [Site](https://www.irs.gov/uac/soi-tax-stats-individual-income-tax-statistics-zip-code-data-soi)
-| Starbucks Locations | starbucks.csv | [Site](https://www.kaggle.com/starbucks/store-locations)
+> [Source](https://www.kaggle.com/starbucks/store-locations)
