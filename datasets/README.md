@@ -42,3 +42,25 @@ UID: STORE_NUMBER
 
 
 > [Source](https://www.kaggle.com/starbucks/store-locations)
+
+### Diversity Dataset
+_ County Diversity Information _  
+Dataset Filename: `diversity.csv`    
+UID: COUNTY + STATE
+
+| Attribute    | Type | Description          |
+| ---          | ---  | ---                  |
+| COUNTY | Char |   |
+| STATE  | Char | |
+| INDEX  | Char | Two-digit State abbreviation code  |
+| 1      | Num | Black or African American alone |
+| 2      | Num | American Indian and Alaska Native alone |
+| 3      | Num | Asian alone |
+| 4      | Num | Native Hawaiian and Other Pacific Islander alone |
+| 5      | Num | Two or More Races |
+| 6      | Num | Hispanic or Latino |
+| 7      | Num | White alone, not Hispanic or Latino |
+
+
+
+> [Source](https://github.com/kdallas2/diversity/blob/master/di.csv)
