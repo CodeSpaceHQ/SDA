@@ -64,3 +64,17 @@ UID: COUNTY + STATE
 
 
 > [Source](https://github.com/kdallas2/diversity/blob/master/di.csv)
+
+### Location Dataset
+_Zipcodes, Cities, States & Counties_  
+Dataset Filename: `locations.csv`    
+
+| Attribute    | Type | Description          |
+| ---          | ---  | ---                  |
+| ZIPCODE | Num |   |
+| CITY   | Char | |
+| STATE  | Char | Two-digit State abbreviation code  |
+| COUNTY | Char | |
+
+
+> [Source](https://www.gaslampmedia.com/download-zip-code-latitude-longitude-city-state-county-csv/)
