@@ -2,7 +2,7 @@
 
 ## Datasets
 ### Income Dataset
-_ 2013 Tax Income Statistics_   
+_2013 Tax Income Statistics_   
 Dataset Filename: `income-data.csv`    
 UID: ZIPCODE
 
@@ -27,7 +27,7 @@ AGI_STUB:
 > [Source](https://www.irs.gov/uac/soi-tax-stats-individual-income-tax-statistics-zip-code-data-soi)
 
 ### Starbucks Locations Dataset
-_ All the US Starbucks Locations _  
+_All the US Starbucks Locations_  
 Dataset Filename: `starbucks.csv`    
 UID: STORE_NUMBER
 
@@ -44,7 +44,7 @@ UID: STORE_NUMBER
 > [Source](https://www.kaggle.com/starbucks/store-locations)
 
 ### Diversity Dataset
-_ County Diversity Information _  
+_County Diversity Information_  
 Dataset Filename: `diversity.csv`    
 UID: COUNTY + STATE
 
