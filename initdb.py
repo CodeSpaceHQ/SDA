@@ -67,7 +67,7 @@ def create_database(cursor, connection):
 
 def connect_to_database(connection):
     """
-    Attempt to connecect to DB_NAME database
+    Attempt to connect to DB_NAME database
     """
     try:
         connection.database = DB_NAME
@@ -111,6 +111,7 @@ password = input("Password: ")
 
 
 # Connect to the MySQL server with user credentials
+# Will exit if MySQL Server is not started
 try:
     mysql_connection = mysql.connector.connect(user=username,
                                                password=password)
@@ -118,6 +119,7 @@ except mysql.connector.Error as err:
     if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
         print("Username or Password was incorrect.")
     else: print(err)
+    sys.exit()
 
 # Get cursor from server connection
 connection_cursor = mysql_connection.cursor()
