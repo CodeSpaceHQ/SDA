@@ -12,7 +12,7 @@ UID: ZIPCODE
 | STATE        | Char | Two-digit State abbreviation code |
 | ZIPCODE      | Char | |
 | AGI_STUB     | Num  | See below |
-| NUM_RETURNS  | Num  |  |
+| NUM_RETURNS  | Num  | |
 | TOTAL_INCOME | Num  | 1040:22 / 1040A:15 / 1040EZ:4 |
 
 AGI_STUB:
@@ -31,11 +31,11 @@ _All the US Starbucks Locations_
 Dataset Filename: `starbucks.csv`    
 UID: STORE_NUMBER
 
-| Attribute    | Type | Description          |
-| ---          | ---  | ---                  |
-| STORE_NUMBER | Char | Two sets of numbers separated by '-'      |
+| Attribute    | Type | Description |
+| ---          | ---  | --- |
+| STORE_NUMBER | Char | Two sets of numbers separated by '-' |
 | CITY         | Char | |
-| STATE        | Char | Two-digit State abbreviation code  |
+| STATE        | Char | Two-digit State abbreviation code |
 | ZIPCODE      | Char | |
 | LONG         | Char | Longitude |
 | LAT          | Char | Latitude |
@@ -48,11 +48,11 @@ _County Diversity Information_
 Dataset Filename: `diversity.csv`    
 UID: COUNTY + STATE
 
-| Attribute    | Type | Description          |
-| ---          | ---  | ---                  |
-| COUNTY | Char |   |
+| Attribute    | Type | Description |
+| ---          | ---  | --- |
+| COUNTY | Char | |
 | STATE  | Char | |
-| INDEX  | Char | Two-digit State abbreviation code  |
+| INDEX  | Char | Two-digit State abbreviation code |
 | 1      | Num | Black or African American alone |
 | 2      | Num | American Indian and Alaska Native alone |
 | 3      | Num | Asian alone |
@@ -69,12 +69,12 @@ UID: COUNTY + STATE
 _Zipcodes, Cities, States & Counties_  
 Dataset Filename: `locations.csv`    
 
-| Attribute    | Type | Description          |
-| ---          | ---  | ---                  |
-| ZIPCODE | Num |   |
-| CITY   | Char | |
-| STATE  | Char | Two-digit State abbreviation code  |
-| COUNTY | Char | |
+| Attribute | Type | Description |
+| ---       | ---  | --- |
+| ZIPCODE   | Num  | |
+| CITY      | Char | |
+| STATE     | Char | Two-digit State abbreviation code  |
+| COUNTY    | Char | |
 
 
 > [Source](https://www.gaslampmedia.com/download-zip-code-latitude-longitude-city-state-county-csv/)
