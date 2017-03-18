@@ -6,6 +6,8 @@
 # 6) exit
 
 import sys
+import os
+import csv
 import mysql.connector
 from mysql.connector import errorcode
 
@@ -20,13 +22,13 @@ TABLES['income'] = (
     "   `STATE` char(2) NOT NULL,"
     "   `ZIPCODE` char(5) NOT NULL,"
     "   `AGI_STUB` tinyint NOT NULL,"
-    "   `NUM_RETURNS` decimal(15,4) NOT NULL,"
-    "   `TOTAL_INCOME` decimal(15,4) NOT NULL,"
+    "   `NUM_RETURNS` float(15,4) NOT NULL,"
+    "   `TOTAL_INCOME` float(15,4) NOT NULL,"
     "   PRIMARY KEY (ZIPCODE)"
     ") ENGINE=InnoDB")
 
-TABLES['starbucks-locations'] = (
-    "CREATE TABLE `starbucks-locations` ("
+TABLES['starbucks'] = (
+    "CREATE TABLE `starbucks` ("
     "   `STORE_NUMBER` varchar(20) NOT NULL,"
     "   `CITY` char(25) NOT NULL,"
     "   `STATE` char(2) NOT NULL,"
@@ -38,27 +40,44 @@ TABLES['starbucks-locations'] = (
 
 TABLES['diversity'] = (
     "CREATE TABLE `diversity` ("
-    "   `COUNTY` varchar(20) NOT NULL,"
+    "   `COUNTY` varchar(50) NOT NULL,"
     "   `STATE` char(2) NOT NULL,"
-    "   `INDEX` decimal(7,6) NOT NULL,"
-    "   `1` decimal(3,1) NOT NULL,"
-    "   `2` decimal(3,1) NOT NULL,"
-    "   `3` decimal(3,1) NOT NULL,"
-    "   `4` decimal(3,1) NOT NULL,"
-    "   `5` decimal(3,1) NOT NULL,"
-    "   `6` decimal(3,1) NOT NULL,"
-    "   `7` decimal(3,1)NOT NULL,"
-    "   PRIMARY KEY (COUNTY),"
-    "   PRIMARY KEY (STATE)"
+    "   `INDEX` float(7,6) NOT NULL,"
+    "   `1` float(3,1) NOT NULL,"
+    "   `2` float(3,1) NOT NULL,"
+    "   `3` float(3,1) NOT NULL,"
+    "   `4` float(3,1) NOT NULL,"
+    "   `5` float(3,1) NOT NULL,"
+    "   `6` float(3,1) NOT NULL,"
+    "   `7` float(3,1)NOT NULL,"
+    "   PRIMARY KEY (COUNTY, STATE)"
     ") ENGINE=InnoDB")
 
 TABLES['locations'] = (
     "CREATE TABLE `locations` ("
     "   `ZIPCODE` varchar(25) NOT NULL,"
-    "   `CITY` char(10) NOT NULL,"
+    "   `CITY` char(25) NOT NULL,"
     "   `STATE` char(2) NOT NULL,"
-    "   `COUNTY` char(10) NOT NULL"
+    "   `COUNTY` char(50) NOT NULL"
     ") ENGINE=InnoDB")
+
+# SQL insert queries for each table
+SQL_INSERT = dict()
+SQL_INSERT['income'] = "INSERT INTO income " \
+                       "VALUES(%s, %s, %s, %s, %s, %s);"
+SQL_INSERT['starbucks'] = "INSERT INTO starbucks " \
+                                    "VALUES(%s, %s, %s, %s, %s, %s);"
+SQL_INSERT['diversity'] = "INSERT INTO diversity " \
+                          "VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"
+SQL_INSERT['locations'] = "INSERT INTO locations " \
+                          "VALUES(%s, %s, %s, %s);"
+
+# Data sets for each table
+DATASETS = dict()
+DATASETS['income'] = csv.reader(open('datasets\income-data.csv'))
+DATASETS['starbucks'] = csv.reader(open('datasets\\starbucks.csv'))
+DATASETS['diversity'] = csv.reader(open('datasets\\diversity.csv'))
+DATASETS['locations'] = csv.reader(open('datasets\\locations.csv'))
 
 
 def create_database(cursor, connection):
@@ -117,7 +136,18 @@ def create_tables(cursor, connection):
             print("OK")
 
         # commit transactions
-        connection.commit()
+    connection.commit()
+
+
+def insert_data(cursor, connection):
+    connection.start_transaction()
+    for name, data in DATASETS.items():
+        print(name)
+        next(data)
+        for row in data:
+            print(row)
+            cursor.execute(SQL_INSERT[name], row)
+    connection.commit()
 
 
 # Get username and password for desired account
@@ -144,7 +174,10 @@ mysql_connection.autocommit = False
 create_database(connection_cursor, mysql_connection)
 # Create tables
 create_tables(connection_cursor, mysql_connection)
+# insert data
+insert_data(connection_cursor, mysql_connection)
 # Close cursor
 connection_cursor.close()
 # Close connection
 mysql_connection.close()
+
