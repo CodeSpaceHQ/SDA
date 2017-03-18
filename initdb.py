@@ -1,9 +1,8 @@
 # Initializes a MySQL Database
 # 1) connect to server
 # 2) create database with cursor
-# 3) connect to database
+# 3) connect to created database
 # 4) create tables with cursor
-# 5) commit transactoins
 # 6) exit
 
 import sys
