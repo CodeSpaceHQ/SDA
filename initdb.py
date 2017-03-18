@@ -8,7 +8,7 @@
 
 import sys
 import mysql.connector
-import db
+import dbmanager
 from mysql.connector import errorcode
 
 # Start up a database instance
