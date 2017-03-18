@@ -13,7 +13,7 @@ This is the semester project for Spring 2017 CS 4354 Concepts Of Database System
 ## Installation
 After installing all the [Prerequisites](#prerequisites) and cloning to this repo, navigate to the root folder for this project.
 ```bash
-pip install -r Requirements.txt
+pip install -r requirements.txt
 ```
 
 ## Roadmap
