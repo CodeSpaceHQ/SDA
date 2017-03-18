@@ -66,6 +66,8 @@ def create_database(cursor, connection):
     """
     Attempt to create the DB_NAME database
     """
+    # Start transaction
+    connection.start_transaction()
     try:
         create_sda_db = "CREATE DATABASE {}".format(DB_NAME)
         print("Creating database {}".format(DB_NAME))
@@ -98,6 +100,8 @@ def create_tables(cursor, connection):
     """
     # Connect to database
     connect_to_database(connection)
+    # Start transaction
+    connection.start_transaction()
     for name, query in TABLES.items():
         try:
             print("Creating table {}: ".format(name), end='')
