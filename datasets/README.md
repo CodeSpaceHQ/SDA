@@ -4,7 +4,7 @@
 ### Income Dataset
 _2013 Tax Income Statistics_   
 Dataset Filename: `income-data.csv`    
-UID: ZIPCODE
+UID: ZIPCODE + AGI_STUB
 
 | Attribute    | Type | Description |
 | ---          | ---  | ---         |
