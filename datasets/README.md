@@ -71,7 +71,7 @@ Dataset Filename: `locations.csv`
 
 | Attribute | Type | Description |
 | ---       | ---  | --- |
-| ZIPCODE   | Num  | |
+| ZIPCODE   | Char  | |
 | CITY      | Char | |
 | STATE     | Char | Two-digit State abbreviation code  |
 | COUNTY    | Char | |

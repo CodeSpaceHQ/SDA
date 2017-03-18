@@ -6,10 +6,15 @@ _A study of economic and demographic relationships in relation to Starbucks loca
 This is the semester project for Spring 2017 CS 4354 Concepts Of Database Systems course.
 
 
-## Developer Requirements
+## Prerequisites
 - [MySQL Community Server](https://dev.mysql.com/downloads/mysql/)
 - [Python version 3.6+](https://www.python.org/downloads/)
 
+## Installation
+After installing all the [Prerequisites](#prerequisites) and cloning to this repo, navigate to the root folder for this project.
+```bash
+pip install -r Requirements.txt
+```
 
 ## Roadmap
 1. Conceptual schema.
@@ -25,4 +30,4 @@ them appropriately.
 ## Deliverables
 1. Project Proposal
 2. Final Report
-3. Presentation 
+3. Presentation
