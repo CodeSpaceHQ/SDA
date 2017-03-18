@@ -14,39 +14,51 @@ from mysql.connector import errorcode
 DB_NAME = "starbucksdb"
 
 TABLES = dict()
-# Create table statments
-# replace with own schema
-
-# https://www.kaggle.com/starbucks/store-locations
-TABLES['locations'] = (
-    "CREATE TABLE `locations` ("
-    "   `brand` varchar(15) NOT NULL,"
-    "   `store_number` varchar(20) NOT NULL,"
-    "   `store_name` varchar(15) NOT NULL,"
-    "   `ownership_type` varchar(10) NOT NULL,"
-    "   `street_address` varchar(25) NOT NULL,"
-    "   `city` varchar(15) NOT NULL,"
-    "   `state` varchar(2) NOT NULL,"
-    "   `country` varchar(2) NOT NULL,"
-    "   `postcode` varchar(10),"
-    "   `phone_number` varchar(11),"
-    "   `timezone` varchar(20) NOT NULL,"
-    "   `longitude` decimal(4,2) NOT NULL,"
-    "   `latitude` decimal(4,2) NOT NULL"
+# Create table statements
+TABLES['income'] = (
+    "CREATE TABLE `income` ("
+    "   `STATEFIPS` char(2) NOT NULL,"
+    "   `STATE` char(2) NOT NULL,"
+    "   `ZIPCODE` char(5) NOT NULL,"
+    "   `AGI_STUB` tinyint NOT NULL,"
+    "   `NUM_RETURNS` decimal(15,4) NOT NULL,"
+    "   `TOTAL_INCOME` decimal(15,4) NOT NULL,"
+    "   PRIMARY KEY (ZIPCODE)"
     ") ENGINE=InnoDB")
 
-# https://github.com/kdallas2/diversity/blob/master/di.csv
+TABLES['starbucks-locations'] = (
+    "CREATE TABLE `starbucks-locations` ("
+    "   `STORE_NUMBER` varchar(20) NOT NULL,"
+    "   `CITY` char(25) NOT NULL,"
+    "   `STATE` char(2) NOT NULL,"
+    "   `ZIPCODE` char(5) NOT NULL,"
+    "   `LONG` varchar(10) NOT NULL,"
+    "   `LAT` varchar(10) NOT NULL,"
+    "   PRIMARY KEY (STORE_NUMBER)"
+    ") ENGINE=InnoDB")
+
 TABLES['diversity'] = (
     "CREATE TABLE `diversity` ("
-    "   `location` varchar(15) NOT NULL,"
-    "   `diversity_index` decimal(7,6) NOT NULL,"
-    "   `african_american` decimal(4,2) NOT NULL,"
-    "   `american_indian` decimal(4,2) NOT NULL,"
-    "   `asian` decimal(4,2) NOT NULL,"
-    "   `pacific_islander` decimal(4,2) NOT NULL,"
-    "   `two_or_more` decimal(4,2) NOT NULL,"
-    "   `hispanic_latino` decimal(4,2) NOT NULL,"
-    "   `white_only` decimal(4,2) NOT NULL"
+    "   `COUNTY` varchar(20) NOT NULL,"
+    "   `STATE` char(2) NOT NULL,"
+    "   `INDEX` decimal(7,6) NOT NULL,"
+    "   `1` decimal(3,1) NOT NULL,"
+    "   `2` decimal(3,1) NOT NULL,"
+    "   `3` decimal(3,1) NOT NULL,"
+    "   `4` decimal(3,1) NOT NULL,"
+    "   `5` decimal(3,1) NOT NULL,"
+    "   `6` decimal(3,1) NOT NULL,"
+    "   `7` decimal(3,1)NOT NULL,"
+    "   PRIMARY KEY (COUNTY),"
+    "   PRIMARY KEY (STATE)"
+    ") ENGINE=InnoDB")
+
+TABLES['locations'] = (
+    "CREATE TABLE `locations` ("
+    "   `ZIPCODE` varchar(25) NOT NULL,"
+    "   `CITY` char(10) NOT NULL,"
+    "   `STATE` char(2) NOT NULL,"
+    "   `COUNTY` char(10) NOT NULL"
     ") ENGINE=InnoDB")
 
 
@@ -109,7 +121,6 @@ def create_tables(cursor, connection):
 username = input("Username (root or other account): ")
 password = input("Password: ")
 
-
 # Connect to the MySQL server with user credentials
 # Will exit if MySQL Server is not started
 try:
@@ -118,7 +129,8 @@ try:
 except mysql.connector.Error as err:
     if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
         print("Username or Password was incorrect.")
-    else: print(err)
+    else:
+        print(err)
     sys.exit()
 
 # Get cursor from server connection
