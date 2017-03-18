@@ -11,15 +11,15 @@ print("[3] Initialize the SDA database and tables")
 print("[q] Quite")
 
 choice = ''
-while choice != '':
+while choice != 'q':
     choice = input("option: ")
 
     if choice == 'q':
         print("GoodBye!")
     elif choice == '1':
-        db.startUp()
+        dbmanager.startUp()
     elif choice == '2':
-        db.stop()
+        dbmanager.stop()
     elif choice == '3':
         os.system("python3 initdb.py")
     else:

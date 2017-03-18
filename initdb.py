@@ -11,9 +11,6 @@ import mysql.connector
 import dbmanager
 from mysql.connector import errorcode
 
-# Start up a database instance
-db.startUp()
-
 # Define constants
 DB_NAME = "starbucksdb"
 
