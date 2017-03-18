@@ -8,7 +8,6 @@ This is the semester project for Spring 2017 CS 4354 Concepts Of Database System
 
 ## Prerequisites
 - [MySQL Community Server 5.7](https://dev.mysql.com/downloads/mysql/)
-- [MySQL Python Connector](https://dev.mysql.com/downloads/connector/python/)
 - [Python version 3.6+](https://www.python.org/downloads/)
 
 ## Installation
