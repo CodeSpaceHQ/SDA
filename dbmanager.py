@@ -8,7 +8,3 @@ def startUp():
 # function to close an instance of the database
 def stop():
     os.system("mysql.server stop")
-
-# function to check if the database exist, if not then create one
-def verifyTables(dnName):
-    os.system("")

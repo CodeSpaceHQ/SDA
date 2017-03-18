@@ -8,7 +8,7 @@ print("\n")
 print("[1] Start up the database")
 print("[2] Stop the database instance")
 print("[3] Initialize the SDA database and tables")
-print("[q] Quite")
+print("[q] Quit")
 
 choice = ''
 while choice != 'q':
