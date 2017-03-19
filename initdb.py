@@ -24,13 +24,13 @@ TABLES['income'] = (
     "   `AGI_STUB` tinyint NOT NULL,"
     "   `NUM_RETURNS` float(15,4) NOT NULL,"
     "   `TOTAL_INCOME` float(15,4) NOT NULL,"
-    "   PRIMARY KEY (ZIPCODE)"
+    "   PRIMARY KEY (STATE, ZIPCODE, AGI_STUB)"
     ") ENGINE=InnoDB")
 
 TABLES['starbucks'] = (
     "CREATE TABLE `starbucks` ("
     "   `STORE_NUMBER` varchar(20) NOT NULL,"
-    "   `CITY` char(25) NOT NULL,"
+    "   `CITY` char(50) NOT NULL,"
     "   `STATE` char(2) NOT NULL,"
     "   `ZIPCODE` char(5) NOT NULL,"
     "   `LONG` varchar(10) NOT NULL,"
@@ -56,9 +56,10 @@ TABLES['diversity'] = (
 TABLES['locations'] = (
     "CREATE TABLE `locations` ("
     "   `ZIPCODE` varchar(25) NOT NULL,"
-    "   `CITY` char(25) NOT NULL,"
+    "   `CITY` char(50) NOT NULL,"
     "   `STATE` char(2) NOT NULL,"
-    "   `COUNTY` char(50) NOT NULL"
+    "   `COUNTY` char(50) NOT NULL,"
+    "   PRIMARY KEY (ZIPCODE, COUNTY)"
     ") ENGINE=InnoDB")
 
 # SQL insert queries for each table
@@ -137,7 +138,6 @@ def create_tables(cursor, connection):
 
         # commit transactions
     connection.commit()
-
 
 def insert_data(cursor, connection):
     connection.start_transaction()
