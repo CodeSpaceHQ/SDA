@@ -1,5 +1,5 @@
 import dbmanager
-import os
+import initdb
 
 print("\t*****************************")
 print("\t***** Choose an option ******")
@@ -21,6 +21,6 @@ while choice != 'q':
     elif choice == '2':
         dbmanager.stop()
     elif choice == '3':
-        os.system("python3 initdb.py")
+        initdb.main("","")
     else:
         print("\n!!Invalid Input!!")
