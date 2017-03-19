@@ -140,10 +140,13 @@ def insert_data(cursor, connection):
             cursor.execute(SQL_INSERT[name], row)
 
 
-def main_init_db():
-    # Get username and password for desired account
-    username = input("Username (root or other account): ")
-    password = input("Password: ")
+def main(username='', password=''):
+    if __name__ == '__main__': main()
+
+    if username == "" or password=="":
+        # Get username and password for desired account
+        username = input("Username (root or other account): ")
+        password = input("Password: ")
 
     # Connect to the MySQL server with user credentials
     # Will exit if MySQL Server is not started
