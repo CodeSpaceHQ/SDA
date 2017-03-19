@@ -140,45 +140,47 @@ def insert_data(cursor, connection):
             cursor.execute(SQL_INSERT[name], row)
 
 
-# Get username and password for desired account
-username = input("Username (root or other account): ")
-password = input("Password: ")
+def main_init_db():
+    # Get username and password for desired account
+    username = input("Username (root or other account): ")
+    password = input("Password: ")
 
-# Connect to the MySQL server with user credentials
-# Will exit if MySQL Server is not started
-try:
-    mysql_connection = mysql.connector.connect(user=username,
-                                               password=password)
-except mysql.connector.Error as err:
-    if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
-        print("Username or Password was incorrect.")
-    else:
-        print(err)
-    sys.exit()
+    # Connect to the MySQL server with user credentials
+    # Will exit if MySQL Server is not started
+    try:
+        mysql_connection = mysql.connector.connect(user=username,
+                                                   password=password)
+    except mysql.connector.Error as err:
+        if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
+            print("Username or Password was incorrect.")
+        else:
+            print(err)
+        sys.exit()
 
-# Get cursor from server connection
-connection_cursor = mysql_connection.cursor()
-# Set autocommit to false for batch
-mysql_connection.autocommit = False
+    # Get cursor from server connection
+    connection_cursor = mysql_connection.cursor()
+    # Set autocommit to false for batch
+    mysql_connection.autocommit = False
 
-# Start a transaction
-mysql_connection.start_transaction()
+    # Start a transaction
+    mysql_connection.start_transaction()
 
-# Create database
-create_database(connection_cursor, mysql_connection)
-# Create tables
-create_tables(connection_cursor, mysql_connection)
-# insert data
-insert_data(connection_cursor, mysql_connection)
+    # Create database
+    create_database(connection_cursor, mysql_connection)
+    # Create tables
+    create_tables(connection_cursor, mysql_connection)
+    # insert data
+    insert_data(connection_cursor, mysql_connection)
 
-# Commit transaction
-mysql_connection.commit()
+    # Commit transaction
+    mysql_connection.commit()
 
-# Close cursor
-connection_cursor.close()
-# Close connection
-mysql_connection.close()
+    # Close cursor
+    connection_cursor.close()
+    # Close connection
+    mysql_connection.close()
 
-# Print completed
-print("Database set up completed.")
+    # Print completed
+    print("Database set up completed.")
+
 
