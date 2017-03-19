@@ -4,7 +4,7 @@
 ### Income Dataset
 _2013 Tax Income Statistics_   
 Dataset Filename: `income-data.csv`    
-UID: ZIPCODE
+UID: ZIPCODE + AGI_STUB
 
 | Attribute    | Type | Description |
 | ---          | ---  | ---         |
@@ -71,7 +71,7 @@ Dataset Filename: `locations.csv`
 
 | Attribute | Type | Description |
 | ---       | ---  | --- |
-| ZIPCODE   | Num  | |
+| ZIPCODE   | Char  | |
 | CITY      | Char | |
 | STATE     | Char | Two-digit State abbreviation code  |
 | COUNTY    | Char | |
