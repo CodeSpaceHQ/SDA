@@ -6,7 +6,6 @@
 # 6) exit
 
 import sys
-import os
 import csv
 import mysql.connector
 from mysql.connector import errorcode
@@ -67,7 +66,7 @@ SQL_INSERT = dict()
 SQL_INSERT['income'] = "INSERT INTO income " \
                        "VALUES(%s, %s, %s, %s, %s, %s);"
 SQL_INSERT['starbucks'] = "INSERT INTO starbucks " \
-                                    "VALUES(%s, %s, %s, %s, %s, %s);"
+                          "VALUES(%s, %s, %s, %s, %s, %s);"
 SQL_INSERT['diversity'] = "INSERT INTO diversity " \
                           "VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"
 SQL_INSERT['locations'] = "INSERT INTO locations " \
@@ -85,8 +84,6 @@ def create_database(cursor, connection):
     """
     Attempt to create the DB_NAME database
     """
-    # Start transaction
-    connection.start_transaction()
     try:
         create_sda_db = "CREATE DATABASE {}".format(DB_NAME)
         print("Creating database {}".format(DB_NAME))
@@ -94,8 +91,6 @@ def create_database(cursor, connection):
     except mysql.connector.Error as mysqlError:
         print("Failed creating database: {}".format(mysqlError))
         sys.exit()
-    # commit transactions
-    connection.commit()
 
 
 def connect_to_database(connection):
@@ -117,10 +112,7 @@ def create_tables(cursor, connection):
     Attempt to execute each CREATE statement in TABLES
     to create tables.
     """
-    # Connect to database
     connect_to_database(connection)
-    # Start transaction
-    connection.start_transaction()
     for name, query in TABLES.items():
         try:
             print("Creating table {}: ".format(name), end='')
@@ -136,18 +128,16 @@ def create_tables(cursor, connection):
         else:
             print("OK")
 
-        # commit transactions
-    connection.commit()
 
 def insert_data(cursor, connection):
-    connection.start_transaction()
+    complete = 1
     for name, data in DATASETS.items():
-        print(name)
         next(data)
+        total = len(DATASETS)
+        print("({}/{})Inserting data into {}...".format(complete, total, name))
+        complete += 1
         for row in data:
-            print(row)
             cursor.execute(SQL_INSERT[name], row)
-    connection.commit()
 
 
 # Get username and password for desired account
@@ -170,14 +160,25 @@ except mysql.connector.Error as err:
 connection_cursor = mysql_connection.cursor()
 # Set autocommit to false for batch
 mysql_connection.autocommit = False
+
+# Start a transaction
+mysql_connection.start_transaction()
+
 # Create database
 create_database(connection_cursor, mysql_connection)
 # Create tables
 create_tables(connection_cursor, mysql_connection)
 # insert data
 insert_data(connection_cursor, mysql_connection)
+
+# Commit transaction
+mysql_connection.commit()
+
 # Close cursor
 connection_cursor.close()
 # Close connection
 mysql_connection.close()
+
+# Print completed
+print("Database set up completed.")
 
