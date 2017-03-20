@@ -74,12 +74,13 @@ SQL_INSERT['diversity'] = "INSERT INTO diversity " \
 SQL_INSERT['locations'] = "INSERT INTO locations " \
                           "VALUES(%s, %s, %s, %s);"
 
-# Data sets for each table
+# Load the data sets
 DATASETS = dict()
 DATASETS['income'] = csv.reader(open(os.path.join('datasets', 'income-data.csv')))
 DATASETS['starbucks'] = csv.reader(open(os.path.join('datasets', 'starbucks.csv')))
 DATASETS['diversity'] = csv.reader(open(os.path.join('datasets', 'diversity.csv')))
 DATASETS['locations'] = csv.reader(open(os.path.join('datasets', 'locations.csv')))
+
 
 
 def create_database(cursor):
@@ -187,4 +188,3 @@ def main(username='', password=''):
 
     # Print completed
     print("Database set up completed.")
-
