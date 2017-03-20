@@ -7,7 +7,6 @@
 
 import sys
 import os
-from time import sleep
 import csv
 import mysql.connector
 from mysql.connector import errorcode
@@ -82,7 +81,6 @@ DATASETS['diversity'] = csv.reader(open(os.path.join('datasets', 'diversity.csv'
 DATASETS['locations'] = csv.reader(open(os.path.join('datasets', 'locations.csv')))
 
 
-
 def create_database(cursor):
     """
     Attempt to create the DB_NAME database
@@ -92,8 +90,7 @@ def create_database(cursor):
         print("Creating database {}".format(DB_NAME))
         cursor.execute(create_sda_db)
     except mysql.connector.Error as mysqlError:
-        print("Failed creating database: {}".format(mysqlError))
-        sys.exit()
+        raise Exception('Failed creating database: {}'.format(mysqlError))
 
 
 def connect_to_database(connection):
@@ -103,11 +100,7 @@ def connect_to_database(connection):
     try:
         connection.database = DB_NAME
     except mysql.connector.Error as mysqlError:
-        if mysqlError.errno == errorcode.ER_BAD_DB_ERROR:
-            print("Database does not exist")
-        else:
-            print(mysqlError)
-        sys.exit()
+        raise Exception('There was a problem connecting to the database {}:\n{}'.format(DB_NAME, mysqlError))
 
 
 def create_tables(cursor, connection):
@@ -122,12 +115,7 @@ def create_tables(cursor, connection):
             # Execute the CREATE xxx in TABLES
             cursor.execute(query)
         except mysql.connector.Error as mysqlError:
-            if mysqlError.errno == errorcode.ER_TABLE_EXISTS_ERROR:
-                print("already exists in {}".format(DB_NAME))
-            elif mysqlError.errno == errorcode.ER_SYNTAX_ERROR:
-                print(mysqlError)
-            else:
-                print(mysqlError.msg)
+            raise Exception('There was a problem creating table {}:\n{}'.format(name, mysqlError))
         else:
             print("OK")
 
@@ -144,8 +132,6 @@ def insert_data(cursor):
 
 
 def main(username='', password=''):
-    if __name__ == '__main__': main()
-
     if username == "" or password == "":
         # Get username and password for desired account
         username = input("Username (root or other account): ")
@@ -157,11 +143,7 @@ def main(username='', password=''):
         mysql_connection = mysql.connector.connect(user=username,
                                                    password=password)
     except mysql.connector.Error as err:
-        if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
-            print("Username or Password was incorrect.")
-        else:
-            print(err)
-        sys.exit()
+        raise Exception('There was a problem connecting to the server:\n{}'.format(err))
 
     # Get cursor from server connection
     mysql_cursor = mysql_connection.cursor()
@@ -188,3 +170,6 @@ def main(username='', password=''):
 
     # Print completed
     print("Database set up completed.")
+
+
+if __name__ == '__main__': main()
