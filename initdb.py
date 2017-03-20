@@ -6,6 +6,8 @@
 # 6) exit
 
 import sys
+import os
+from time import sleep
 import csv
 import mysql.connector
 from mysql.connector import errorcode
@@ -29,7 +31,7 @@ TABLES['income'] = (
 TABLES['starbucks'] = (
     "CREATE TABLE `starbucks` ("
     "   `STORE_NUMBER` varchar(20) NOT NULL,"
-    "   `CITY` char(50) NOT NULL,"
+    "   `CITY` varchar(50) NOT NULL,"
     "   `STATE` char(2) NOT NULL,"
     "   `ZIPCODE` char(5) NOT NULL,"
     "   `LONG` varchar(10) NOT NULL,"
@@ -54,10 +56,10 @@ TABLES['diversity'] = (
 
 TABLES['locations'] = (
     "CREATE TABLE `locations` ("
-    "   `ZIPCODE` varchar(25) NOT NULL,"
-    "   `CITY` char(50) NOT NULL,"
+    "   `ZIPCODE` char(5) NOT NULL,"
+    "   `CITY` varchar(50) NOT NULL,"
     "   `STATE` char(2) NOT NULL,"
-    "   `COUNTY` char(50) NOT NULL,"
+    "   `COUNTY` varchar(50) NOT NULL,"
     "   PRIMARY KEY (ZIPCODE, COUNTY)"
     ") ENGINE=InnoDB")
 
@@ -74,13 +76,13 @@ SQL_INSERT['locations'] = "INSERT INTO locations " \
 
 # Data sets for each table
 DATASETS = dict()
-DATASETS['income'] = csv.reader(open('datasets\income-data.csv'))
-DATASETS['starbucks'] = csv.reader(open('datasets\\starbucks.csv'))
-DATASETS['diversity'] = csv.reader(open('datasets\\diversity.csv'))
-DATASETS['locations'] = csv.reader(open('datasets\\locations.csv'))
+DATASETS['income'] = csv.reader(open(os.path.join('datasets', 'income-data.csv')))
+DATASETS['starbucks'] = csv.reader(open(os.path.join('datasets', 'starbucks.csv')))
+DATASETS['diversity'] = csv.reader(open(os.path.join('datasets', 'diversity.csv')))
+DATASETS['locations'] = csv.reader(open(os.path.join('datasets', 'locations.csv')))
 
 
-def create_database(cursor, connection):
+def create_database(cursor):
     """
     Attempt to create the DB_NAME database
     """
@@ -129,12 +131,12 @@ def create_tables(cursor, connection):
             print("OK")
 
 
-def insert_data(cursor, connection):
+def insert_data(cursor):
     complete = 1
     for name, data in DATASETS.items():
         next(data)
         total = len(DATASETS)
-        print("({}/{})Inserting data into {}...".format(complete, total, name))
+        print("({}/{})Inserting data into {}".format(complete, total, name))
         complete += 1
         for row in data:
             cursor.execute(SQL_INSERT[name], row)
@@ -143,7 +145,7 @@ def insert_data(cursor, connection):
 def main(username='', password=''):
     if __name__ == '__main__': main()
 
-    if username == "" or password=="":
+    if username == "" or password == "":
         # Get username and password for desired account
         username = input("Username (root or other account): ")
         password = input("Password: ")
@@ -161,7 +163,7 @@ def main(username='', password=''):
         sys.exit()
 
     # Get cursor from server connection
-    connection_cursor = mysql_connection.cursor()
+    mysql_cursor = mysql_connection.cursor()
     # Set autocommit to false for batch
     mysql_connection.autocommit = False
 
@@ -169,21 +171,20 @@ def main(username='', password=''):
     mysql_connection.start_transaction()
 
     # Create database
-    create_database(connection_cursor, mysql_connection)
+    create_database(mysql_cursor)
     # Create tables
-    create_tables(connection_cursor, mysql_connection)
+    create_tables(mysql_cursor, mysql_connection)
     # insert data
-    insert_data(connection_cursor, mysql_connection)
+    insert_data(mysql_cursor)
 
     # Commit transaction
     mysql_connection.commit()
 
     # Close cursor
-    connection_cursor.close()
+    mysql_cursor.close()
     # Close connection
     mysql_connection.close()
 
     # Print completed
     print("Database set up completed.")
-
 
