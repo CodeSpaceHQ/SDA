@@ -21,6 +21,6 @@ while choice != 'q':
     elif choice == '2':
         dbmanager.stop()
     elif choice == '3':
-        initdb.main("","")
+        initdb.main()
     else:
         print("\n!!Invalid Input!!")
