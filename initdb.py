@@ -82,8 +82,8 @@ def create_database(cursor):
         create_sda_db = "CREATE DATABASE {}".format(DB_NAME)
         print("Creating database {}".format(DB_NAME))
         cursor.execute(create_sda_db)
-    except mysql.connector.Error as MySqlError:
-        raise Exception('Failed creating database: {}'.format(MySqlError))
+    except mysql.connector.Error as mysql_error:
+        raise Exception('Failed creating database: {}'.format(mysql_error))
 
 
 def connect_to_database(connection):
@@ -92,8 +92,8 @@ def connect_to_database(connection):
     """
     try:
         connection.database = DB_NAME
-    except mysql.connector.Error as MySqlError:
-        raise Exception('There was a problem connecting to the database {}:\n{}'.format(DB_NAME, MySqlError))
+    except mysql.connector.Error as mysql_error:
+        raise Exception('There was a problem connecting to the database {}:\n{}'.format(DB_NAME, mysql_error))
 
 
 def create_tables(cursor, connection):
@@ -107,10 +107,8 @@ def create_tables(cursor, connection):
             print("Creating table {}: ".format(name), end='')
             # Execute the CREATE xxx in TABLES
             cursor.execute(query)
-        except mysql.connector.Error as MySqlError:
-            raise Exception('There was a problem creating table {}:\n{}'.format(name, MySqlError))
-        else:
-            print("OK")
+        except mysql.connector.Error as mysql_error:
+            raise Exception('There was a problem creating table {}:\n{}'.format(name, mysql_error))
 
 
 def insert_data(cursor):
@@ -165,11 +163,9 @@ def main(username='', password=''):
     # Close connection
     mysql_connection.close()
 
-    # Print completed
-    print("Database set up completed.")
-
 if __name__ == '__main__':
     try:
         main()
-    except Exception as InitDbException:
-        print(InitDbException)
+    # TODO: make exceptions more specific
+    except Exception as db_exception:
+        print(db_exception)
