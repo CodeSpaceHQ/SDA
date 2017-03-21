@@ -159,7 +159,7 @@ def main(username='', password=''):
 
     # Close cursor
     mysql_cursor.close()
-    
+
     # Close connection
     mysql_connection.close()
 
