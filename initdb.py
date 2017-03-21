@@ -171,5 +171,4 @@ def main(username='', password=''):
     # Print completed
     print("Database set up completed.")
 
-
 if __name__ == '__main__': main()
