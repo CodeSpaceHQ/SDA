@@ -8,7 +8,7 @@ Example:
     try:
         raise: Exception("Some Exception")
     except Exception as exception:
-        raise InputError("Could not perform task", exception)
+        raise InputError("Could not perform task", exception.args)
 """
 
 

@@ -2,6 +2,7 @@
 
 import os
 import csv
+import sys
 from exceptions import InputError, MySqlError
 import mysql.connector
 
@@ -85,7 +86,7 @@ def create_database(cursor):
         cursor.execute(create_sda_db)
     except mysql.connector.Error as mysql_error:
         raise MySqlError(message='Failed creating database.',
-                         args=mysql_error)
+                         args=mysql_error.args)
 
 
 def connect_to_database(connection):
@@ -96,7 +97,7 @@ def connect_to_database(connection):
         connection.database = DB_NAME
     except mysql.connector.Error as mysql_error:
         raise MySqlError(message='There was a problem connecting to the database.',
-                         args=mysql_error)
+                         args=mysql_error.args)
 
 
 def create_tables(cursor, connection):
@@ -112,7 +113,7 @@ def create_tables(cursor, connection):
             cursor.execute(query)
         except mysql.connector.Error as mysql_error:
             raise MySqlError(message='There was a problem creating table.',
-                             args=mysql_error)
+                             args=mysql_error.args)
 
 
 def insert_data(cursor):
@@ -140,7 +141,7 @@ def main(username='', password=''):
                                                    password=password)
     except mysql.connector.Error as err:
         raise InputError(message='There was a problem connecting to the server.',
-                         args=err)
+                         args=err.args)
 
     # Get cursor from server connection
     mysql_cursor = mysql_connection.cursor()
@@ -173,4 +174,4 @@ if __name__ == '__main__':
     try:
         main()
     except (InputError, MySqlError) as db_exception:
-        print(db_exception)
+        print(db_exception.message)
