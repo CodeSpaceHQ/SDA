@@ -2,8 +2,9 @@
 
 import os
 import csv
-import mysql.connector
 from exceptions import InputError, MySqlError
+import mysql.connector
+
 # Define constants
 DB_NAME = "starbucksdb"
 
