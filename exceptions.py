@@ -10,12 +10,16 @@ Example:
     except Exception as exception:
         raise InputError("Could not perform task", exception)
 """
+
+
 class Error(Exception):
     """Base class for exceptions in this module."""
     pass
 
+
 class InputError(Error):
     """Input Error, used to throw an error when user input is incorrect."""
+
     def __init__(self, message, args):
         """Initializes input error
         Args:
@@ -28,4 +32,20 @@ class InputError(Error):
         self.message = message
         self.args = args
 
+
 # TODO(asclines): There needs to be another exception for MySQL errors
+class MySqlError(Error):
+    """MySQL Error, used to throw an error when a MySQL Server error occurs"""
+
+    def __init__(self, message, args):
+        """
+        Initializes MySql error
+        :Args:
+            message: User facing message. This is the message that will be
+                displayed to the user.
+            args: Additional arguments that should be passed up the stack.
+                This will usually be the original exception that was caught.
+        """
+        Error.__init__(self)
+        self.message = message
+        self.args = args

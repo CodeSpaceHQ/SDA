@@ -3,7 +3,7 @@
 import os
 import csv
 import mysql.connector
-
+from exceptions import *
 # Define constants
 DB_NAME = "starbucksdb"
 
@@ -83,7 +83,8 @@ def create_database(cursor):
         print("Creating database {}".format(DB_NAME))
         cursor.execute(create_sda_db)
     except mysql.connector.Error as mysql_error:
-        raise Exception('Failed creating database: {}'.format(mysql_error))
+        raise MySqlError(message='Failed creating database: {}'.format(mysql_error),
+                         args=mysql_error)
 
 
 def connect_to_database(connection):
@@ -93,7 +94,8 @@ def connect_to_database(connection):
     try:
         connection.database = DB_NAME
     except mysql.connector.Error as mysql_error:
-        raise Exception('There was a problem connecting to the database {}:\n{}'.format(DB_NAME, mysql_error))
+        raise MySqlError(message='There was a problem connecting to the database {}:\n{}'.format(DB_NAME, mysql_error),
+                         args=mysql_error)
 
 
 def create_tables(cursor, connection):
@@ -108,12 +110,14 @@ def create_tables(cursor, connection):
             # Execute the CREATE xxx in TABLES
             cursor.execute(query)
         except mysql.connector.Error as mysql_error:
-            raise Exception('There was a problem creating table {}:\n{}'.format(name, mysql_error))
+            raise MySqlError(message='There was a problem creating table {}:\n{}'.format(name, mysql_error),
+                             args=mysql_error)
 
 
 def insert_data(cursor):
     complete = 1
     for name, data in DATASETS.items():
+        # Skip the header row
         next(data)
         total = len(DATASETS)
         print("({}/{})Inserting data into {}".format(complete, total, name))
@@ -134,7 +138,8 @@ def main(username='', password=''):
         mysql_connection = mysql.connector.connect(user=username,
                                                    password=password)
     except mysql.connector.Error as err:
-        raise Exception('There was a problem connecting to the server:\n{}'.format(err))
+        raise InputError(message='There was a problem connecting to the server:\n{}'.format(err),
+                         args=err)
 
     # Get cursor from server connection
     mysql_cursor = mysql_connection.cursor()
@@ -166,6 +171,5 @@ def main(username='', password=''):
 if __name__ == '__main__':
     try:
         main()
-    # TODO: make exceptions more specific
-    except Exception as db_exception:
+    except (InputError, MySqlError) as db_exception:
         print(db_exception)
