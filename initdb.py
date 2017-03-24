@@ -2,7 +2,6 @@
 
 import os
 import csv
-import sys
 from exceptions import InputError, MySqlError
 import mysql.connector
 
