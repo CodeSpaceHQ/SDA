@@ -33,14 +33,13 @@ class InputError(Error):
         self.args = args
 
 
-# TODO(asclines): There needs to be another exception for MySQL errors
 class MySqlError(Error):
     """MySQL Error, used to throw an error when a MySQL Server error occurs"""
 
     def __init__(self, message, args):
         """
         Initializes MySql error
-        :Args:
+        Args:
             message: User facing message. This is the message that will be
                 displayed to the user.
             args: Additional arguments that should be passed up the stack.

@@ -3,7 +3,7 @@
 import os
 import csv
 import mysql.connector
-from exceptions import *
+from exceptions import InputError, MySqlError
 # Define constants
 DB_NAME = "starbucksdb"
 
@@ -83,7 +83,7 @@ def create_database(cursor):
         print("Creating database {}".format(DB_NAME))
         cursor.execute(create_sda_db)
     except mysql.connector.Error as mysql_error:
-        raise MySqlError(message='Failed creating database: {}'.format(mysql_error),
+        raise MySqlError(message='Failed creating database.',
                          args=mysql_error)
 
 
@@ -94,7 +94,7 @@ def connect_to_database(connection):
     try:
         connection.database = DB_NAME
     except mysql.connector.Error as mysql_error:
-        raise MySqlError(message='There was a problem connecting to the database {}:\n{}'.format(DB_NAME, mysql_error),
+        raise MySqlError(message='There was a problem connecting to the database.',
                          args=mysql_error)
 
 
@@ -110,7 +110,7 @@ def create_tables(cursor, connection):
             # Execute the CREATE xxx in TABLES
             cursor.execute(query)
         except mysql.connector.Error as mysql_error:
-            raise MySqlError(message='There was a problem creating table {}:\n{}'.format(name, mysql_error),
+            raise MySqlError(message='There was a problem creating table.',
                              args=mysql_error)
 
 
@@ -138,7 +138,7 @@ def main(username='', password=''):
         mysql_connection = mysql.connector.connect(user=username,
                                                    password=password)
     except mysql.connector.Error as err:
-        raise InputError(message='There was a problem connecting to the server:\n{}'.format(err),
+        raise InputError(message='There was a problem connecting to the server.',
                          args=err)
 
     # Get cursor from server connection
