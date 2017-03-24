@@ -1,56 +1,81 @@
 # Initializes a MySQL Database
-# 1) connect to server
-# 2) create database with cursor
-# 3) connect to database
-# 4) create tables with cursor
-# 5) commit transactoins
-# 6) exit
 
-import sys
+import os
+import csv
+from exceptions import InputError, MySqlError
 import mysql.connector
-from mysql.connector import errorcode
 
 # Define constants
 DB_NAME = "starbucksdb"
 
 TABLES = dict()
-# Create table statments
-# replace with own schema
-
-# https://www.kaggle.com/starbucks/store-locations
-TABLES['locations'] = (
-    "CREATE TABLE `locations` ("
-    "   `brand` varchar(15) NOT NULL,"
-    "   `store_number` varchar(20) NOT NULL,"
-    "   `store_name` varchar(15) NOT NULL,"
-    "   `ownership_type` varchar(10) NOT NULL,"
-    "   `street_address` varchar(25) NOT NULL,"
-    "   `city` varchar(15) NOT NULL,"
-    "   `state` varchar(2) NOT NULL,"
-    "   `country` varchar(2) NOT NULL,"
-    "   `postcode` varchar(10),"
-    "   `phone_number` varchar(11),"
-    "   `timezone` varchar(20) NOT NULL,"
-    "   `longitude` decimal(4,2) NOT NULL,"
-    "   `latitude` decimal(4,2) NOT NULL"
+# Create table statements
+TABLES['income'] = (
+    "CREATE TABLE `income` ("
+    "   `STATEFIPS` char(2) NOT NULL,"
+    "   `STATE` char(2) NOT NULL,"
+    "   `ZIPCODE` char(5) NOT NULL,"
+    "   `AGI_STUB` tinyint NOT NULL,"
+    "   `NUM_RETURNS` float(15,4) NOT NULL,"
+    "   `TOTAL_INCOME` float(15,4) NOT NULL,"
+    "   PRIMARY KEY (STATE, ZIPCODE, AGI_STUB)"
     ") ENGINE=InnoDB")
 
-# https://github.com/kdallas2/diversity/blob/master/di.csv
+TABLES['starbucks'] = (
+    "CREATE TABLE `starbucks` ("
+    "   `STORE_NUMBER` varchar(20) NOT NULL,"
+    "   `CITY` varchar(50) NOT NULL,"
+    "   `STATE` char(2) NOT NULL,"
+    "   `ZIPCODE` char(5) NOT NULL,"
+    "   `LONG` varchar(10) NOT NULL,"
+    "   `LAT` varchar(10) NOT NULL,"
+    "   PRIMARY KEY (STORE_NUMBER)"
+    ") ENGINE=InnoDB")
+
 TABLES['diversity'] = (
     "CREATE TABLE `diversity` ("
-    "   `location` varchar(15) NOT NULL,"
-    "   `diversity_index` decimal(7,6) NOT NULL,"
-    "   `african_american` decimal(4,2) NOT NULL,"
-    "   `american_indian` decimal(4,2) NOT NULL,"
-    "   `asian` decimal(4,2) NOT NULL,"
-    "   `pacific_islander` decimal(4,2) NOT NULL,"
-    "   `two_or_more` decimal(4,2) NOT NULL,"
-    "   `hispanic_latino` decimal(4,2) NOT NULL,"
-    "   `white_only` decimal(4,2) NOT NULL"
+    "   `COUNTY` varchar(50) NOT NULL,"
+    "   `STATE` char(2) NOT NULL,"
+    "   `INDEX` float(7,6) NOT NULL,"
+    "   `1` float(3,1) NOT NULL,"
+    "   `2` float(3,1) NOT NULL,"
+    "   `3` float(3,1) NOT NULL,"
+    "   `4` float(3,1) NOT NULL,"
+    "   `5` float(3,1) NOT NULL,"
+    "   `6` float(3,1) NOT NULL,"
+    "   `7` float(3,1)NOT NULL,"
+    "   PRIMARY KEY (COUNTY, STATE)"
     ") ENGINE=InnoDB")
 
+TABLES['locations'] = (
+    "CREATE TABLE `locations` ("
+    "   `ZIPCODE` char(5) NOT NULL,"
+    "   `CITY` varchar(50) NOT NULL,"
+    "   `STATE` char(2) NOT NULL,"
+    "   `COUNTY` varchar(50) NOT NULL,"
+    "   PRIMARY KEY (ZIPCODE, COUNTY)"
+    ") ENGINE=InnoDB")
 
-def create_database(cursor, connection):
+# SQL insert queries for each table
+SQL_INSERT = dict()
+SQL_INSERT['income'] = "INSERT INTO income " \
+                       "VALUES(%s, %s, %s, %s, %s, %s);"
+SQL_INSERT['starbucks'] = "INSERT INTO starbucks " \
+                          "VALUES(%s, %s, %s, %s, %s, %s);"
+SQL_INSERT['diversity'] = "INSERT INTO diversity " \
+                          "VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"
+SQL_INSERT['locations'] = "INSERT INTO locations " \
+                          "VALUES(%s, %s, %s, %s);"
+
+# Load the data sets
+DATASETS = dict()
+DATASETS['income'] = csv.reader(open(os.path.join('datasets', 'income-data.csv')))
+DATASETS['starbucks'] = csv.reader(open(os.path.join('datasets', 'starbucks.csv')))
+DATASETS['diversity'] = csv.reader(open(os.path.join('datasets', 'diversity.csv')))
+DATASETS['locations'] = csv.reader(open(os.path.join('datasets', 'locations.csv')))
+
+
+def create_database(cursor):
     """
     Attempt to create the DB_NAME database
     """
@@ -58,25 +83,20 @@ def create_database(cursor, connection):
         create_sda_db = "CREATE DATABASE {}".format(DB_NAME)
         print("Creating database {}".format(DB_NAME))
         cursor.execute(create_sda_db)
-    except mysql.connector.Error as mysqlError:
-        print("Failed creating database: {}".format(mysqlError))
-        sys.exit()
-    # commit transactions
-    connection.commit()
+    except mysql.connector.Error as mysql_error:
+        raise MySqlError(message='Failed creating database.',
+                         args=mysql_error.args)
 
 
 def connect_to_database(connection):
     """
-    Attempt to connecect to DB_NAME database
+    Attempt to connect to DB_NAME database
     """
     try:
         connection.database = DB_NAME
-    except mysql.connector.Error as mysqlError:
-        if mysqlError.errno == errorcode.ER_BAD_DB_ERROR:
-            print("Database does not exist")
-        else:
-            print(mysqlError)
-        sys.exit()
+    except mysql.connector.Error as mysql_error:
+        raise MySqlError(message='There was a problem connecting to the database.',
+                         args=mysql_error.args)
 
 
 def create_tables(cursor, connection):
@@ -84,50 +104,73 @@ def create_tables(cursor, connection):
     Attempt to execute each CREATE statement in TABLES
     to create tables.
     """
-    # Connect to database
     connect_to_database(connection)
     for name, query in TABLES.items():
         try:
             print("Creating table {}: ".format(name), end='')
             # Execute the CREATE xxx in TABLES
             cursor.execute(query)
-        except mysql.connector.Error as mysqlError:
-            if mysqlError.errno == errorcode.ER_TABLE_EXISTS_ERROR:
-                print("already exists in {}".format(DB_NAME))
-            elif mysqlError.errno == errorcode.ER_SYNTAX_ERROR:
-                print(mysqlError)
-            else:
-                print(mysqlError.msg)
-        else:
-            print("OK")
-
-        # commit transactions
-        connection.commit()
+        except mysql.connector.Error as mysql_error:
+            raise MySqlError(message='There was a problem creating table.',
+                             args=mysql_error.args)
 
 
-# Get username and password for desired account
-username = input("Username (root or other account): ")
-password = input("Password: ")
+def insert_data(cursor):
+    complete = 1
+    for name, data in DATASETS.items():
+        # Skip the header row
+        next(data)
+        total = len(DATASETS)
+        print("({}/{})Inserting data into {}".format(complete, total, name))
+        complete += 1
+        for row in data:
+            cursor.execute(SQL_INSERT[name], row)
 
 
-# Connect to the MySQL server with user credentials
-try:
-    mysql_connection = mysql.connector.connect(user=username,
-                                               password=password)
-except mysql.connector.Error as err:
-    if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
-        print("Username or Password was incorrect.")
-    else: print(err)
+def main(username='', password=''):
+    if username == "" or password == "":
+        # Get username and password for desired account
+        username = input("Username (root or other account): ")
+        password = input("Password: ")
 
-# Get cursor from server connection
-connection_cursor = mysql_connection.cursor()
-# Set autocommit to false for batch
-mysql_connection.autocommit = False
-# Create database
-create_database(connection_cursor, mysql_connection)
-# Create tables
-create_tables(connection_cursor, mysql_connection)
-# Close cursor
-connection_cursor.close()
-# Close connection
-mysql_connection.close()
+    # Connect to the MySQL server with user credentials
+    # Will exit if MySQL Server is not started
+    try:
+        mysql_connection = mysql.connector.connect(user=username,
+                                                   password=password)
+    except mysql.connector.Error as err:
+        raise InputError(message='There was a problem connecting to the server.',
+                         args=err.args)
+
+    # Get cursor from server connection
+    mysql_cursor = mysql_connection.cursor()
+
+    # Set autocommit to false for batch
+    mysql_connection.autocommit = False
+
+    # Start a transaction
+    mysql_connection.start_transaction()
+
+    # Create database
+    create_database(mysql_cursor)
+
+    # Create tables
+    create_tables(mysql_cursor, mysql_connection)
+
+    # insert data
+    insert_data(mysql_cursor)
+
+    # Commit transaction
+    mysql_connection.commit()
+
+    # Close cursor
+    mysql_cursor.close()
+
+    # Close connection
+    mysql_connection.close()
+
+if __name__ == '__main__':
+    try:
+        main()
+    except (InputError, MySqlError) as db_exception:
+        print(db_exception.message)
