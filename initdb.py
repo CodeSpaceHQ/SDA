@@ -1,15 +1,9 @@
 # Initializes a MySQL Database
-# 1) connect to server
-# 2) create database with cursor
-# 3) connect to created database
-# 4) create tables with cursor
-# 6) exit
 
-import sys
+import os
 import csv
+from exceptions import InputError, MySqlError
 import mysql.connector
-import dbmanager
-from mysql.connector import errorcode
 
 # Define constants
 DB_NAME = "starbucksdb"
@@ -30,7 +24,7 @@ TABLES['income'] = (
 TABLES['starbucks'] = (
     "CREATE TABLE `starbucks` ("
     "   `STORE_NUMBER` varchar(20) NOT NULL,"
-    "   `CITY` char(50) NOT NULL,"
+    "   `CITY` varchar(50) NOT NULL,"
     "   `STATE` char(2) NOT NULL,"
     "   `ZIPCODE` char(5) NOT NULL,"
     "   `LONG` varchar(10) NOT NULL,"
@@ -55,10 +49,10 @@ TABLES['diversity'] = (
 
 TABLES['locations'] = (
     "CREATE TABLE `locations` ("
-    "   `ZIPCODE` varchar(25) NOT NULL,"
-    "   `CITY` char(50) NOT NULL,"
+    "   `ZIPCODE` char(5) NOT NULL,"
+    "   `CITY` varchar(50) NOT NULL,"
     "   `STATE` char(2) NOT NULL,"
-    "   `COUNTY` char(50) NOT NULL,"
+    "   `COUNTY` varchar(50) NOT NULL,"
     "   PRIMARY KEY (ZIPCODE, COUNTY)"
     ") ENGINE=InnoDB")
 
@@ -73,15 +67,15 @@ SQL_INSERT['diversity'] = "INSERT INTO diversity " \
 SQL_INSERT['locations'] = "INSERT INTO locations " \
                           "VALUES(%s, %s, %s, %s);"
 
-# Data sets for each table
+# Load the data sets
 DATASETS = dict()
-DATASETS['income'] = csv.reader(open('datasets\income-data.csv'))
-DATASETS['starbucks'] = csv.reader(open('datasets\\starbucks.csv'))
-DATASETS['diversity'] = csv.reader(open('datasets\\diversity.csv'))
-DATASETS['locations'] = csv.reader(open('datasets\\locations.csv'))
+DATASETS['income'] = csv.reader(open(os.path.join('datasets', 'income-data.csv')))
+DATASETS['starbucks'] = csv.reader(open(os.path.join('datasets', 'starbucks.csv')))
+DATASETS['diversity'] = csv.reader(open(os.path.join('datasets', 'diversity.csv')))
+DATASETS['locations'] = csv.reader(open(os.path.join('datasets', 'locations.csv')))
 
 
-def create_database(cursor, connection):
+def create_database(cursor):
     """
     Attempt to create the DB_NAME database
     """
@@ -89,9 +83,9 @@ def create_database(cursor, connection):
         create_sda_db = "CREATE DATABASE {}".format(DB_NAME)
         print("Creating database {}".format(DB_NAME))
         cursor.execute(create_sda_db)
-    except mysql.connector.Error as mysqlError:
-        print("Failed creating database: {}".format(mysqlError))
-        sys.exit()
+    except mysql.connector.Error as mysql_error:
+        raise MySqlError(message='Failed creating database.',
+                         args=mysql_error.args)
 
 
 def connect_to_database(connection):
@@ -100,12 +94,9 @@ def connect_to_database(connection):
     """
     try:
         connection.database = DB_NAME
-    except mysql.connector.Error as mysqlError:
-        if mysqlError.errno == errorcode.ER_BAD_DB_ERROR:
-            print("Database does not exist")
-        else:
-            print(mysqlError)
-        sys.exit()
+    except mysql.connector.Error as mysql_error:
+        raise MySqlError(message='There was a problem connecting to the database.',
+                         args=mysql_error.args)
 
 
 def create_tables(cursor, connection):
@@ -119,32 +110,25 @@ def create_tables(cursor, connection):
             print("Creating table {}: ".format(name), end='')
             # Execute the CREATE xxx in TABLES
             cursor.execute(query)
-        except mysql.connector.Error as mysqlError:
-            if mysqlError.errno == errorcode.ER_TABLE_EXISTS_ERROR:
-                print("already exists in {}".format(DB_NAME))
-            elif mysqlError.errno == errorcode.ER_SYNTAX_ERROR:
-                print(mysqlError)
-            else:
-                print(mysqlError.msg)
-        else:
-            print("OK")
+        except mysql.connector.Error as mysql_error:
+            raise MySqlError(message='There was a problem creating table.',
+                             args=mysql_error.args)
 
 
-def insert_data(cursor, connection):
+def insert_data(cursor):
     complete = 1
     for name, data in DATASETS.items():
+        # Skip the header row
         next(data)
         total = len(DATASETS)
-        print("({}/{})Inserting data into {}...".format(complete, total, name))
+        print("({}/{})Inserting data into {}".format(complete, total, name))
         complete += 1
         for row in data:
             cursor.execute(SQL_INSERT[name], row)
 
 
 def main(username='', password=''):
-    if __name__ == '__main__': main()
-
-    if username == "" or password=="":
+    if username == "" or password == "":
         # Get username and password for desired account
         username = input("Username (root or other account): ")
         password = input("Password: ")
@@ -155,14 +139,12 @@ def main(username='', password=''):
         mysql_connection = mysql.connector.connect(user=username,
                                                    password=password)
     except mysql.connector.Error as err:
-        if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
-            print("Username or Password was incorrect.")
-        else:
-            print(err)
-        sys.exit()
+        raise InputError(message='There was a problem connecting to the server.',
+                         args=err.args)
 
     # Get cursor from server connection
-    connection_cursor = mysql_connection.cursor()
+    mysql_cursor = mysql_connection.cursor()
+
     # Set autocommit to false for batch
     mysql_connection.autocommit = False
 
@@ -170,21 +152,25 @@ def main(username='', password=''):
     mysql_connection.start_transaction()
 
     # Create database
-    create_database(connection_cursor, mysql_connection)
+    create_database(mysql_cursor)
+
     # Create tables
-    create_tables(connection_cursor, mysql_connection)
+    create_tables(mysql_cursor, mysql_connection)
+
     # insert data
-    insert_data(connection_cursor, mysql_connection)
+    insert_data(mysql_cursor)
 
     # Commit transaction
     mysql_connection.commit()
 
     # Close cursor
-    connection_cursor.close()
+    mysql_cursor.close()
+
     # Close connection
     mysql_connection.close()
 
-    # Print completed
-    print("Database set up completed.")
-
-
+if __name__ == '__main__':
+    try:
+        main()
+    except (InputError, MySqlError) as db_exception:
+        print(db_exception.message)
