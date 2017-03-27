@@ -1,5 +1,12 @@
 import dbmanager
 import initdb
+import ctypes
+
+def isAdmin():
+    try:
+        return ctypes.windll.shell32.IsUserAdmin()
+    except:
+        return False
 
 print("\t*****************************")
 print("\t***** Choose an option ******")
@@ -17,9 +24,9 @@ while choice != 'q':
     if choice == 'q':
         print("GoodBye!")
     elif choice == '1':
-        dbmanager.startUp()
+        dbmanager.startUp(isAdmin())
     elif choice == '2':
-        dbmanager.stop()
+        dbmanager.stop(isAdmin)
     elif choice == '3':
         initdb.main()
     else:
