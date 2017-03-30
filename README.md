@@ -7,7 +7,7 @@ This is the semester project for Spring 2017 CS 4354 Concepts Of Database System
 
 
 ## Prerequisites
-Be sure to configure MySQL as a Windows service.
+*Be sure to configure MySQL as a Windows service and if it running before running the startup script*
 - [MySQL Community Server 5.7](https://dev.mysql.com/downloads/mysql/)
 - [Python version 3.6+](https://www.python.org/downloads/)
 
@@ -16,12 +16,6 @@ After installing all the [Prerequisites](#prerequisites) and cloning to this rep
 ```bash
 pip install -r requirements.txt
 ```
-
-## Configure your system
-To start/stop MySQL, you will need to activate your administrator account.
-1. Open Command Prompt as administrator.
-2. run `net user administrator /active:yes`
-3. (Optional) Reset password by running `net user administrator *` note that you will be prompt to enter the new password twice.
 
 ## Roadmap
 1. Conceptual schema.
