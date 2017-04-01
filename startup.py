@@ -1,4 +1,3 @@
-import dbmanager
 import initdb
 import ctypes
 
