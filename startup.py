@@ -1,5 +1,4 @@
 import initdb
-import ctypes
 
 print("\t*****************************")
 print("\t***** Choose an option ******")
