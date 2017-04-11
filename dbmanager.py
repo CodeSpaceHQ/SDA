@@ -16,10 +16,11 @@ def init_connection(username=None, password=None):
     """
     connection = None
     if not username or not password:
-        return None
+        username = input("Username: ")
+        password = input("Password: ")
 
     try:
-        connection = mysql.connector.connect(username=username,
+        connection = mysql.connector.connect(user=username,
                                               password=password,
                                               database=DB_NAME)
     except mysql.connector.Error as err:
