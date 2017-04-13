@@ -77,6 +77,7 @@ DATASETS['locations'] = csv.reader(open(os.path.join('datasets',
                                                      'locations.csv')))
 
 
+
 def init_connections(username=None, password=None):
     """Initializes connection to running MySQL server
 
