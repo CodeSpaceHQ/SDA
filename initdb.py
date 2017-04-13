@@ -1,5 +1,3 @@
-# Initializes a MySQL Database
-
 import os
 import csv
 from exceptions import InputError, MySqlError
@@ -8,8 +6,8 @@ import mysql.connector
 # Define constants
 DB_NAME = "starbucksdb"
 
+# SQL CREATE statements for each table
 TABLES = dict()
-# Create table statements
 TABLES['income'] = (
     "CREATE TABLE IF NOT EXISTS `income` ("
     "   `STATEFIPS` char(2) NOT NULL,"
@@ -56,7 +54,7 @@ TABLES['locations'] = (
     "   PRIMARY KEY (ZIPCODE, COUNTY)"
     ") ENGINE=InnoDB")
 
-# SQL insert queries for each table
+# SQL INSERT statements for each table
 SQL_INSERT = {}
 SQL_INSERT['income'] = "INSERT INTO income " \
                        "VALUES(%s, %s, %s, %s, %s, %s);"
@@ -67,7 +65,7 @@ SQL_INSERT['diversity'] = "INSERT INTO diversity " \
 SQL_INSERT['locations'] = "INSERT INTO locations " \
                           "VALUES(%s, %s, %s, %s);"
 
-# Load the data sets
+# Load each data set
 DATASETS = {}
 DATASETS['income'] = csv.reader(open(os.path.join('datasets',
                                                        'income-data.csv')))
@@ -78,16 +76,20 @@ DATASETS['diversity'] = csv.reader(open(os.path.join('datasets',
 DATASETS['locations'] = csv.reader(open(os.path.join('datasets',
                                                           'locations.csv')))
 
+
 def init_connections(username=None, password=None):
     """Initializes connection to running MySQL server
 
     Connects to a running MySQL server using a username/password
     and returns the connection if successful.
-
-    :param username: the username of the account on the server to connect with
-    :param password: the password of the account on the server to connect with
-    :return connection: the open connection to the MySQL server
-    :raises InputError: The username or password input was incorrect
+    
+    Args:
+        username: the username of the account on the server to connect with
+        password: the password of the account on the server to connect with
+    Returns:
+        connection: the open connection to the MySQL server
+    Raises:
+        InputError: The username or password input was incorrect
 
     """
     connection = None
@@ -112,8 +114,10 @@ def init_database(connection):
     Creates the DB_NAME database and creates any tables defined
     in TABLES dictionary inside of the newly created database
 
-    :param connection: the connection to the MySQL Server
-    :raise MySqlError: Raised if there is a connection error or SQL syntax error
+    Args:
+         connection: the connection to the MySQL Server
+    Raises:
+         MySqlError: Raised if there is a connection error or SQL syntax error
     """
     create_db = 'CREATE DATABASE IF NOT EXISTS {}'.format(DB_NAME)
     try:
@@ -145,9 +149,10 @@ def init_data(connection):
           All inserts are done in one transaction and are rolled back
           on any error.
     
-    
-    :param connection: the open connection to the MySQL Server
-    :raise MySqlError: typically a error in SQL syntax, may be an insertion
+    Args:
+        connection: the open connection to the MySQL Server
+    Raises:
+        MySqlError: typically a error in SQL syntax, may be an insertion
                        that is larger than the `max_allowed_packet` size
     """
     try:
