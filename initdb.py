@@ -81,15 +81,15 @@ DATASETS['locations'] = csv.reader(open(os.path.join('datasets',
 def init_connections(username=None, password=None):
     """Initializes connection to running MySQL server
 
-        Connects to a running MySQL server using a username/password
-        and returns the connection if successful.
+    Connects to a running MySQL server using a username/password
+    and returns the connection if successful.
 
-        :arg username: the username of the account on the server to connect with
-        :arg password: the password of the account on the server to connect with
-        :return connection: the open connection to the MySQL server
-        :raises InputError: The username or password input was incorrect
+    :param username: the username of the account on the server to connect with
+    :param password: the password of the account on the server to connect with
+    :return connection: the open connection to the MySQL server
+    :raises InputError: The username or password input was incorrect
 
-        """
+    """
     connection = None
     if not username or not password:
         username = input("Username: ")
@@ -109,12 +109,12 @@ def init_connections(username=None, password=None):
 def init_database(connection):
     """Initialize the database for use.
 
-       Creates the DB_NAME database and creates any tables defined
-       in TABLES dictionary inside of the newly created database
+    Creates the DB_NAME database and creates any tables defined
+    in TABLES dictionary inside of the newly created database
 
-       :arg connection: the connection to the MySQL Server
-       :raise MySqlError: Raised if there is a connection error or SQL syntax error
-       """
+    :param connection: the connection to the MySQL Server
+    :raise MySqlError: Raised if there is a connection error or SQL syntax error
+    """
     create_db = 'CREATE DATABASE IF NOT EXISTS {}'.format(DB_NAME)
     try:
         cursor = connection.cursor()
@@ -133,10 +133,27 @@ def init_database(connection):
 
 
 def init_data(connection):
+    """Insert data from `DATASETS` into `TABLES` in the database
+    
+    For each data set in `DATASETS`, use the corresponding
+    SQL statement in `SQL_INSERT` to insert each record of each
+    data set into the data sets corresponding table.
+    
+    NOTE: MySQL server has a `max_allowed_packet` which defaults
+          to 1MB. For this reason we split our data up into thirds.
+          larger data sets may need splitting up into smaller fractions.
+          All inserts are done in one transaction and are rolled back
+          on any error.
+    
+    
+    :param connection: the open connection to the MySQL Server
+    :raise MySqlError: typically a error in SQL syntax, may be an insertion
+                       that is larger than the `max_allowed_packet` size
+    """
     try:
         cursor = connection.cursor()
         connection.start_transaction()
-        
+
         for name, data in DATASETS.items():
             print("Inserting data into {}".format(name))
             next(data)  # skip the header row
@@ -150,6 +167,7 @@ def init_data(connection):
             cursor.executemany(SQL_INSERT[name], data_blob_3)
 
         connection.commit()
+        cursor.close()
     except mysql.connector.Error as err:
         connection.rollback()
         raise MySqlError(message='Error inserting data: ' + err.msg,
