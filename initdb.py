@@ -92,7 +92,6 @@ def init_connections(username=None, password=None):
         InputError: The username or password input was incorrect
 
     """
-    connection = None
     if not username or not password:
         username = input("Username: ")
         password = input("Password: ")
