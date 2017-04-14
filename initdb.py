@@ -79,10 +79,9 @@ DATASETS['locations'] = csv.reader(open(os.path.join('datasets',
 
 def init_connections(username=None, password=None):
     """Initializes connection to running MySQL server
-
+    
     Connects to a running MySQL server using a username/password
     and returns the connection if successful.
-    
     Args:
         username: the username of the account on the server to connect with
         password: the password of the account on the server to connect with
@@ -90,7 +89,6 @@ def init_connections(username=None, password=None):
         connection: the open connection to the MySQL server
     Raises:
         InputError: The username or password input was incorrect
-
     """
     if not username or not password:
         username = input("Username: ")
@@ -109,10 +107,9 @@ def init_connections(username=None, password=None):
 
 def init_database(connection):
     """Initialize the database for use.
-
+    
     Creates the DB_NAME database and creates any tables defined
     in TABLES dictionary inside of the newly created database
-
     Args:
          connection: the connection to the MySQL Server
     Raises:
@@ -141,13 +138,11 @@ def init_data(connection):
     For each data set in `DATASETS`, use the corresponding
     SQL statement in `SQL_INSERT` to insert each record of each
     data set into the data sets corresponding table.
-    
     NOTE: MySQL server has a `max_allowed_packet` which defaults
           to 1MB. For this reason we split our data up into thirds.
           larger data sets may need splitting up into smaller fractions.
           All inserts are done in one transaction and are rolled back
           on any error.
-    
     Args:
         connection: the open connection to the MySQL Server
     Raises:
