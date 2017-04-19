@@ -43,21 +43,20 @@ def exec_sql(connection, sql):
     
     example: 
         
-        from testdb.py
-        import dbmanager
-        connection = dbmanager.init_connection('MySQLusername', 'MySQLpassword')
-        sql = 'SELECT * FROM locations LIMIT 10;'
-        result = dbmanager.exec_sql(connection, sql)
-        print(result)
+        in a separate python file `your_file_name.py`:
+            import dbmanager
+            connection = dbmanager.init_connection('MySQLusername', 'MySQLpassword')
+            sql = 'SELECT * FROM locations LIMIT 10;'
+            result = dbmanager.exec_sql(connection, sql)
+            print(result)
     """
     cursor = None
-    if sql and connection:
+    try:
         cursor = connection.cursor()
-        try:
-            cursor.execute(sql)
-        except mysql.connector.Error as err:
-            raise MySqlError(message=err.msg,
-                             args=err.args)
+        cursor.execute(sql)
+    except mysql.connector.Error as err:
+        raise MySqlError(message=err.msg,
+                            args=err.args)
     return cursor.fetchall()  # return a list of tuples
 
 
