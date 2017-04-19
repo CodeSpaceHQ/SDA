@@ -40,6 +40,15 @@ def exec_sql(connection, sql):
     :returns None if the connection or sql was None,
              a cursor containing the results of the statement otherwise
     :raises A MySqlError (likely due to an error in the SQL statement syntax)
+    
+    example: 
+        
+        from testdb.py
+        import dbmanager
+        connection = dbmanager.init_connection('MySQLusername', 'MySQLpassword')
+        sql = 'SELECT * FROM locations LIMIT 10;'
+        result = dbmanager.exec_sql(connection, sql)
+        print(result)
     """
     cursor = None
     if sql and connection:
@@ -55,7 +64,6 @@ def exec_sql(connection, sql):
 def main(username=None, password=None, sql=None):
     # Attempt a connection to the server and database
     cnx = init_connection(username, password)
-
     if not sql:
         sql = input('What SQL would you like to execute?: ')
     # Execute the sql statement provided and return the result
