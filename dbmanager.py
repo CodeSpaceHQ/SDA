@@ -40,7 +40,7 @@ def exec_sql(connection, sql):
         except mysql.connector.Error as err:
             raise MySqlError(message=err.msg,
                              args=err.args)
-    return cursor
+    return cursor.fetchall()  # return a list of tuples
 
 
 def main(username=None, password=None, sql=None):
