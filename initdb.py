@@ -1,6 +1,7 @@
 import os
 import csv
 from exceptions import InputError, MySqlError
+from dbmanager import init_connections
 import mysql.connector
 
 # Define constants
@@ -75,34 +76,6 @@ DATASETS['diversity'] = csv.reader(open(os.path.join('datasets',
                                                      'diversity.csv')))
 DATASETS['locations'] = csv.reader(open(os.path.join('datasets',
                                                      'locations.csv')))
-
-
-def init_connections(username=None, password=None):
-    """Initializes connection to running MySQL server
-    
-    Connects to a running MySQL server using a username/password
-    and returns the connection if successful.
-    Args:
-        username: the username of the account on the server to connect with
-        password: the password of the account on the server to connect with
-    Returns:
-        connection: the open connection to the MySQL server
-    Raises:
-        InputError: The username or password input was incorrect
-    """
-    if not username or not password:
-        username = input("Username: ")
-        password = input("Password: ")
-
-    try:
-        connection = mysql.connector.connect(user=username,
-                                             password=password)
-    except mysql.connector.Error as err:
-        raise InputError(message='There was a problem connecting. Please check'
-                                 ' your username and password, and make sure'
-                                 ' the server is running.',
-                         args=err.args)
-    return connection
 
 
 def init_database(connection):

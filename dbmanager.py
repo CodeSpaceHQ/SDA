@@ -4,22 +4,30 @@ import mysql.connector
 DB_NAME = 'starbucksdb'
 
 
-def init_connection(username=None, password=None):
-    """Establish a connection to database
-    :arg username: the username required to access the server
-    :arg password: the password required to access the server
-    :returns None if no username or password was provided,
-            a valid connection (if one was found) otherwise
-    :raises An InputError (likely because no username or password was provided)
+def init_connections(username=None, password=None):
+    """Initializes connection to running MySQL server
+
+    Connects to a running MySQL server using a username/password
+    and returns the connection if successful.
+    Args:
+        username: the username of the account on the server to connect with
+        password: the password of the account on the server to connect with
+    Returns:
+        connection: the open connection to the MySQL server
+    Raises:
+        InputError: The username or password input was incorrect
     """
     if not username or not password:
-        return None
+        username = input("Username: ")
+        password = input("Password: ")
+
     try:
-        connection = mysql.connector.connect(username=username,
-                                             password=password,
-                                             database=DB_NAME)
+        connection = mysql.connector.connect(user=username,
+                                             password=password)
     except mysql.connector.Error as err:
-        raise InputError(message='There was an error connecting to the server.',
+        raise InputError(message='There was a problem connecting. Please check'
+                                 ' your username and password, and make sure'
+                                 ' the server is running.',
                          args=err.args)
     return connection
 
