@@ -1,7 +1,7 @@
 import os
 import csv
 from exceptions import InputError, MySqlError
-from dbmanager import init_connections
+from dbmanager import init_connection
 import mysql.connector
 
 # Define constants
@@ -147,7 +147,7 @@ def init_data(connection):
 
 
 def main(username=None, password=None):
-    cnx = init_connections(username, password)
+    cnx = init_connection(username, password)
     init_database(cnx)
     init_data(cnx)
     cnx.close()

@@ -4,7 +4,7 @@ import mysql.connector
 DB_NAME = 'starbucksdb'
 
 
-def init_connections(username=None, password=None):
+def init_connection(username=None, password=None):
     """Initializes connection to running MySQL server
 
     Connects to a running MySQL server using a username/password
@@ -23,7 +23,8 @@ def init_connections(username=None, password=None):
 
     try:
         connection = mysql.connector.connect(user=username,
-                                             password=password)
+                                             password=password,
+                                             database=DB_NAME)
     except mysql.connector.Error as err:
         raise InputError(message='There was a problem connecting. Please check'
                                  ' your username and password, and make sure'
@@ -44,7 +45,7 @@ def exec_sql(connection, sql):
     if sql and connection:
         cursor = connection.cursor()
         try:
-            return cursor.execute(sql)
+            cursor.execute(sql)
         except mysql.connector.Error as err:
             raise MySqlError(message=err.msg,
                              args=err.args)
@@ -54,8 +55,15 @@ def exec_sql(connection, sql):
 def main(username=None, password=None, sql=None):
     # Attempt a connection to the server and database
     cnx = init_connection(username, password)
+
+    if not sql:
+        sql = input('What SQL would you like to execute?: ')
     # Execute the sql statement provided and return the result
-    return exec_sql(cnx, sql)
+    try:
+        data = exec_sql(cnx, sql)  # data is a list of tuples
+        return data
+    except MySqlError as err:
+        print(err.message)
 
 
 if __name__ == '__main__':
