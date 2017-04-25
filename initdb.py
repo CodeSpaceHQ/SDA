@@ -42,7 +42,7 @@ TABLES['diversity'] = (
     "   `4` float(3,1) NOT NULL,"
     "   `5` float(3,1) NOT NULL,"
     "   `6` float(3,1) NOT NULL,"
-    "   `7` float(3,1)NOT NULL,"
+    "   `7` float(3,1) NOT NULL,"
     "   PRIMARY KEY (`COUNTY`, `STATE`)"
     ") ENGINE=InnoDB")
 
@@ -55,13 +55,11 @@ TABLES['locations'] = (
     "   PRIMARY KEY (`ZIPCODE`, `COUNTY`)"
     ") ENGINE=InnoDB")
 
-
 INDEX = {}
 INDEX['starbucks_zipcode'] = ("CREATE INDEX `starbucks_zipcode` "
                               "ON `starbucks` (`ZIPCODE`)")
 INDEX['income_zipcode'] = ("CREATE INDEX `income_zipcode` "
-                              "ON `starbucks` (`ZIPCODE`)")
-
+                           "ON `starbucks` (`ZIPCODE`)")
 
 # SQL INSERT statements for each table
 SQL_INSERT = {}
@@ -105,7 +103,7 @@ def init_database(connection):
         for name, sql in TABLES.items():  # Create each table in the database
             print('Creating table {}'.format(name))
             cursor.execute(sql)
-        for name, sql in TABLES.items():
+        for name, sql in INDEX.items():
             print('Creating index {}'.format(name))  # Create column indexes
             cursor.execute(sql)
 
@@ -138,7 +136,7 @@ def init_data(connection):
         connection.start_transaction()
 
         for name, data in DATASETS.items():
-            print("Inserting data into {}".format(name))
+            print("Inserting data into {}...".format(name))
             next(data)  # skip the header row
             data = list(data)
             third = len(data) // 3  # Split the data set into thirds
@@ -158,7 +156,7 @@ def init_data(connection):
 
 
 def main(username=None, password=None):
-    cnx = init_connection(username, password)
+    cnx = init_connection(username, password, False)
     init_database(cnx)
     init_data(cnx)
     cnx.close()
