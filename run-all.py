@@ -3,6 +3,7 @@ import glob
 import os
 import ntpath
 from importlib import import_module
+from exceptions import InputError, MySqlError
 from dbmanager import init_connection
 
 def get_name(path):
@@ -28,10 +29,12 @@ def run_all(username=None, password=None):
     connection = init_connection(username, password)
     for module in modules:
         script = import_module('analysis.{}'.format(module))
-        print(script)
         script.run(connection)
 
     connection.close()
 
 if __name__ == '__main__':
-    run_all()
+    try:
+        run_all()
+    except (InputError, MySqlError) as err:
+        print(err.message)
