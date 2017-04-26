@@ -1,0 +1,108 @@
+% Template from course site.
+\documentclass{sigkddExp}
+
+\usepackage{blindtext} %generates filler text
+
+\usepackage[style=numeric-comp,firstinits=true,backend=bibtex]{biblatex}
+\bibliography{references.bib}
+\setcounter{biburlnumpenalty}{7000}
+\setcounter{biburllcpenalty}{7000}
+\setcounter{biburlucpenalty}{8000}
+
+\begin{document}
+%
+% --- Author Metadata here ---
+% -- Can be completely blank or contain 'commented' information like this...
+%\conferenceinfo{WOODSTOCK}{'97 El Paso, Texas USA} % If you happen to know the conference location etc.
+%\CopyrightYear{2001} % Allows a non-default  copyright year  to be 'entered' - IF NEED BE.
+%\crdata{0-12345-67-8/90/01}  % Allows non-default copyright data to be 'entered' - IF NEED BE.
+% --- End of author Metadata ---
+
+\title{A study of economic and demographic relationships in relation to Starbucks locations}
+\subtitle{CS 4345 Final Report}
+% You need the command \numberofauthors to handle the "boxing"
+% and alignment of the authors under the title, and to add
+% a section for authors number 4 through n.
+%
+% Up to the first three authors are aligned under the title;
+% use the \alignauthor commands below to handle those names
+% and affiliations. Add names, affiliations, addresses for
+% additional authors as the argument to \additionalauthors;
+% these will be set for you without further effort on your
+% part as the last section in the body of your article BEFORE
+% References or any Appendices.
+
+\numberofauthors{4}
+%
+% You can go ahead and credit authors number 4+ here;
+% their names will appear in a section called
+% "Additional Authors" just before the Appendices
+% (if there are any) or Bibliography (if there
+% aren't)
+
+% Put no more than the first THREE authors in the \author command
+%%You are free to format the authors in alternate ways if you have more
+%%than three authors.
+
+\author{
+%
+% The command \alignauthor (no curly braces needed) should
+% precede each author name, affiliation/snail-mail address and
+% e-mail address. Additionally, tag each line of
+% affiliation/address with \affaddr, and tag the
+%% e-mail address with \email.
+\alignauthor Alexander Clines\titlenote{Team Leader} \\
+       \affaddr{Texas Tech University}\\
+       \email{alexander.clines@ttu.edu}
+\and
+\alignauthor Dane Lowrey \\
+      \affaddr{Texas Tech University}\\
+      \email{dane.r.lowrey@ttu.edu}
+\alignauthor Isaac Griswold-Steiner \\
+      \affaddr{Texas Tech University}\\
+      \email{isaac.griswold-steiner@ttu.edu}
+\alignauthor Kevin Taing \\
+      \affaddr{Texas Tech University}\\
+      \email{kevin.taing@ttu.edu}
+}
+\date{30 July 1999}
+\maketitle
+\begin{abstract}
+\blindtext
+\end{abstract}
+
+\section{Introduction}
+\blindtext
+
+\section{Data}
+% Here we should go over the datasets and the database schemes
+\subsection{Datasets}
+
+\blindtext
+
+\subsection{Schemas}
+
+\blindtext
+
+\section{System}
+% Here we should explain our project setup with all the python scripts and
+% whatnot
+\blindtext
+
+\section{Results}
+% Here we should discuss the findings of our project
+\blindtext
+
+
+\section{Conclusions}
+% Wrap it up here
+\blindtext
+
+\section{Acknowledgements}
+% Do we want to keep this?
+\blindtext
+
+\printbibliography
+
+% That's all folks!
+\end{document}

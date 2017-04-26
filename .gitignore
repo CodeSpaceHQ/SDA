@@ -214,3 +214,6 @@ TSWLatexianTemp*
 
 # KBibTeX
 *~[0-9]*
+
+# No need for this to keep being commited
+report/report.pdf
