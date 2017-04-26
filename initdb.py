@@ -17,7 +17,7 @@ TABLES['income'] = (
     "   `AGI_STUB` tinyint NOT NULL,"
     "   `NUM_RETURNS` float(15,4) NOT NULL,"
     "   `TOTAL_INCOME` float(15,4) NOT NULL,"
-    "   PRIMARY KEY (STATE, ZIPCODE, AGI_STUB)"
+    "   PRIMARY KEY (`STATE`, `ZIPCODE`, `AGI_STUB`)"
     ") ENGINE=InnoDB")
 
 TABLES['starbucks'] = (
@@ -28,7 +28,7 @@ TABLES['starbucks'] = (
     "   `ZIPCODE` char(5) NOT NULL,"
     "   `LONG` varchar(10) NOT NULL,"
     "   `LAT` varchar(10) NOT NULL,"
-    "   PRIMARY KEY (STORE_NUMBER)"
+    "   PRIMARY KEY (`STORE_NUMBER`)"
     ") ENGINE=InnoDB")
 
 TABLES['diversity'] = (
@@ -42,8 +42,8 @@ TABLES['diversity'] = (
     "   `4` float(3,1) NOT NULL,"
     "   `5` float(3,1) NOT NULL,"
     "   `6` float(3,1) NOT NULL,"
-    "   `7` float(3,1)NOT NULL,"
-    "   PRIMARY KEY (COUNTY, STATE)"
+    "   `7` float(3,1) NOT NULL,"
+    "   PRIMARY KEY (`COUNTY`, `STATE`)"
     ") ENGINE=InnoDB")
 
 TABLES['locations'] = (
@@ -52,8 +52,14 @@ TABLES['locations'] = (
     "   `CITY` varchar(50) NOT NULL,"
     "   `STATE` char(2) NOT NULL,"
     "   `COUNTY` varchar(50) NOT NULL,"
-    "   PRIMARY KEY (ZIPCODE, COUNTY)"
+    "   PRIMARY KEY (`ZIPCODE`, `COUNTY`)"
     ") ENGINE=InnoDB")
+
+INDEX = {}
+INDEX['starbucks_zipcode'] = ("CREATE INDEX `starbucks_zipcode` "
+                              "ON `starbucks` (`ZIPCODE`)")
+INDEX['income_zipcode'] = ("CREATE INDEX `income_zipcode` "
+                           "ON `starbucks` (`ZIPCODE`)")
 
 # SQL INSERT statements for each table
 SQL_INSERT = {}
@@ -94,9 +100,12 @@ def init_database(connection):
         cursor.execute(create_db)  # Create the database
         connection.database = DB_NAME  # Connect to the database
 
-        for name, query in TABLES.items():  # Create each table in the database
+        for name, sql in TABLES.items():  # Create each table in the database
             print('Creating table {}'.format(name))
-            cursor.execute(query)
+            cursor.execute(sql)
+        for name, sql in INDEX.items():
+            print('Creating index {}'.format(name))  # Create column indexes
+            cursor.execute(sql)
 
         cursor.close()
     except mysql.connector.Error as err:
@@ -127,7 +136,7 @@ def init_data(connection):
         connection.start_transaction()
 
         for name, data in DATASETS.items():
-            print("Inserting data into {}".format(name))
+            print("Inserting data into {}...".format(name))
             next(data)  # skip the header row
             data = list(data)
             third = len(data) // 3  # Split the data set into thirds
@@ -147,7 +156,7 @@ def init_data(connection):
 
 
 def main(username=None, password=None):
-    cnx = init_connection(username, password)
+    cnx = init_connection(username, password, False)
     init_database(cnx)
     init_data(cnx)
     cnx.close()
