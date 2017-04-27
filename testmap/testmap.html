@@ -1,11 +1,13 @@
 <head>
-    <!-- Plotly.js -->
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+      #map_canvas {
+        height: 100%;
+      }
+    </style>
     <script src="testmap.js"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyClAQe96W0bA60pqH8Nz3ji2zk_ZLXJk1Q&callback=initMap"></script>
 </head>
 
 <body>
-    <!-- Plotly chart will be drawn inside this DIV -->
-    <div id="myDiv"></div>
-    <div id="choropleth"></div>
+    <div id="map_canvas"></div>
 </body>
