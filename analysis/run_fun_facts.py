@@ -13,6 +13,13 @@ FACTS['city_w_most_stores'] = [(
     "ORDER	BY store_count DESC "
     "LIMIT	1;"
 )]
+FACTS['zipcode_w_most_stores'] = [(
+    "SELECT ZIPCODE, CITY, STATE, COUNT(STORE_NUMBER) as store_count "
+    "FROM	starbucks "
+    "GROUP	BY STATE, ZIPCODE "
+    "ORDER	BY store_count DESC "
+    "LIMIT  1;"
+)]
 FACTS['state_w_most_starbucks'] = [(
     "SELECT	STATE, COUNT(STORE_NUMBER) as store_count "
     "FROM	starbucks "
@@ -62,6 +69,7 @@ def run(connection):
     res = []
     try:
         for name, stuff in FACTS.items():
+            print(name)
             res = dbmanager.exec_sql(connection, stuff[0])
             FACTS[name].append(res)
     except MySqlError as err:  # except a MySQL error from dbmanager.exec_sql()
