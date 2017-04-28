@@ -55,7 +55,7 @@ TABLES['locations'] = (
     "   PRIMARY KEY (`ZIPCODE`, `COUNTY`)"
     ") ENGINE=InnoDB")
 
-INDEX = {}
+INDEX = dict()
 INDEX['starbucks_zipcode'] = ("CREATE INDEX `starbucks_zipcode` "
                               "ON `starbucks` (`ZIPCODE`)")
 INDEX['income_zipcode'] = ("CREATE INDEX `income_zipcode` "
@@ -73,7 +73,7 @@ SQL_INSERT['locations'] = "INSERT INTO locations " \
                           "VALUES(%s, %s, %s, %s);"
 
 # Load each data set
-DATASETS = {}
+DATASETS = dict()
 DATASETS['income'] = csv.reader(open(os.path.join('datasets',
                                                   'income-data.csv')))
 DATASETS['starbucks'] = csv.reader(open(os.path.join('datasets',
