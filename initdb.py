@@ -55,11 +55,19 @@ TABLES['locations'] = (
     "   PRIMARY KEY (`ZIPCODE`, `COUNTY`)"
     ") ENGINE=InnoDB")
 
-INDEX = {}
+INDEX = dict()
 INDEX['starbucks_zipcode'] = ("CREATE INDEX `starbucks_zipcode` "
                               "ON `starbucks` (`ZIPCODE`)")
 INDEX['income_zipcode'] = ("CREATE INDEX `income_zipcode` "
                            "ON `starbucks` (`ZIPCODE`)")
+INDEX['starbucks_state'] = ("CREATE INDEX `starbucks_state` "
+                            "ON `starbucks` (`STATE`)")
+INDEX['starbucks_city'] = ("CREATE INDEX `starbucks_city` "
+                           "ON `starbucks` (`CITY`)")
+INDEX['income_zipcode'] = ("CREATE INDEX `income_zipcode` "
+                           "ON `income` (`ZIPCODE`)")
+INDEX['diversity_state'] = ("CREATE INDEX `diversity_state` "
+                            "ON `diversity` (`STATE`)")
 
 # SQL INSERT statements for each table
 SQL_INSERT = {}
@@ -73,7 +81,7 @@ SQL_INSERT['locations'] = "INSERT INTO locations " \
                           "VALUES(%s, %s, %s, %s);"
 
 # Load each data set
-DATASETS = {}
+DATASETS = dict()
 DATASETS['income'] = csv.reader(open(os.path.join('datasets',
                                                   'income-data.csv')))
 DATASETS['starbucks'] = csv.reader(open(os.path.join('datasets',
@@ -109,6 +117,7 @@ def init_database(connection):
 
         cursor.close()
     except mysql.connector.Error as err:
+        print(err)
         raise MySqlError(message='There was a problem initializing'
                                  ' the database.',
                          args=err.args)

@@ -33,13 +33,13 @@ def run(connection):
     except MySqlError as err:  # except a MySQL error from dbmanager.exec_sql()
         raise MySqlError(message=err.message, args=err.args)
 
-    export(res)
+    export_csv(res)
 
 
-def export(data):
+def export_csv(data):
     print("Exporting to `./analysis/income_vs_starbucks.csv")
-    with open('income_vs_starbucks.csv', 'w', newline='') as csvfile:
-        writer = csv.writer(csvfile, delimiter=',')
+    with open('income_vs_starbucks.csv', 'w', newline='') as csv_file:
+        writer = csv.writer(csv_file, delimiter=',')
         for line in data:
             writer.writerow(line)
 
