@@ -2,12 +2,8 @@ import csv
 import dbmanager
 from exceptions import MySqlError
 
-# graphing
-import matplotlib.pyplot as plt
-
 # machine learning imports
 from sklearn import model_selection
-from sklearn import svm
 from sklearn.ensemble import RandomForestClassifier
 import pandas
 import numpy
@@ -23,6 +19,8 @@ sql_income = "SELECT SUM(i.TOTAL_INCOME) as total_income, i.NUM_RETURNS as num_r
              "ON	i.ZIPCODE = s.ZIPCODE " \
              "WHERE num_returns > 0 " \
              "GROUP	BY i.ZIPCODE "
+
+ml_models = {"random forest": RandomForestClassifier()}
 
 
 def run(connection, sql):
@@ -97,27 +95,39 @@ def binary_equalizer(data, equalize=0):
     return randomized_data
 
 
+def get_train_test(data, target, ratio=0.3):
+    train, test = model_selection.train_test_split(data, test_size=ratio)
+
+    x_train, y_train = split_data(train, target)
+    y_train = y_train.values.reshape((len(y_train.values.tolist()), 1))
+    x_test, y_test = split_data(test, target)
+    y_test = y_test.values.reshape((len(y_test.values.tolist()), 1))
+
+    return x_train, y_train, x_test, y_test
+
+
+def get_results(x_test, y_test, trained_model, key):
+    print("Results for " + key + ":")
+    print(trained_model.score(x_test, y_test))
+
+
+def run_all_classifiers(data):
+    for key, model in ml_models.items():
+        # data preparation for machine learning
+        randomized_data = binary_equalizer(data, equalize=1)
+        x_train, y_train, x_test, y_test = get_train_test(randomized_data, "has_location")
+
+        trained_model = model.fit(x_train, y_train)
+        get_results(x_test, y_test, trained_model, key)
+
+
 def main():
     # data retrieval
     cnx = dbmanager.init_connection()
     data = pandas.DataFrame(run(cnx, sql_income), columns=["income", "num_returns", "per_capita_income", "has_location"])
 
-    # results
-    results_per_split = list() # used when I vary the amount of data
-
-    # data preparation for machine learning
-    randomized_data = binary_equalizer(data, equalize=1)
-    train, test = model_selection.train_test_split(randomized_data, test_size=.2)
-
-    x_train, y_train = split_data(train, "has_location")
-    y_train = y_train.values.reshape((len(y_train.values.tolist()),1))
-    x_test, y_test = split_data(test, "has_location")
-    y_test = y_test.values.reshape((len(y_test.values.tolist()),1))
-
-    # model = svm.LinearSVC(class_weight="balanced")
-    model = RandomForestClassifier()
-    trained_model = model.fit(x_train, y_train)
-    print(trained_model.score(x_test, y_test))
+    # classifier runner
+    run_all_classifiers(data)
 
 
 if __name__ == '__main__':
