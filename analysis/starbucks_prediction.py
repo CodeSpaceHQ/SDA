@@ -20,6 +20,14 @@ sql_income = "SELECT SUM(i.TOTAL_INCOME) as total_income, i.NUM_RETURNS as num_r
              "WHERE num_returns > 0 " \
              "GROUP	BY i.ZIPCODE "
 
+sql_diversity = "SELECT d.1, d.2, d.3, d.4, d.5, d.6, d.7, " \
+                "CASE WHEN s.STORE_NUMBER IS NOT NULL THEN 1 ELSE 0 END AS has_starbucks " \
+                "FROM (SELECT l.COUNTY, l.STATE, l.ZIPCODE, d.1, d.2, d.3, d.4, d.5, d.6, d.7 " \
+                "FROM	diversity d INNER	JOIN locations l " \
+                "ON	l.county = REPLACE(d.county, ' County', '') " \
+                "GROUP	BY d.county) as d LEFT OUTER JOIN starbucks as s ON d.ZIPCODE = s.ZIPCODE " \
+                "GROUP BY d.ZIPCODE"
+
 ml_models = {"random forest": RandomForestClassifier()}
 
 
@@ -96,6 +104,13 @@ def binary_equalizer(data, equalize=0):
 
 
 def get_train_test(data, target, ratio=0.3):
+    """
+
+    :param data:
+    :param target:
+    :param ratio:
+    :return:
+    """
     train, test = model_selection.train_test_split(data, test_size=ratio)
 
     x_train, y_train = split_data(train, target)
@@ -113,21 +128,28 @@ def get_results(x_test, y_test, trained_model, key):
 
 def run_all_classifiers(data):
     for key, model in ml_models.items():
+        run_for_ratio_range(data, key, model)
+
+
+def run_for_ratio_range(data, key, model):
+    for ratio in range(1, 9):
         # data preparation for machine learning
         randomized_data = binary_equalizer(data, equalize=1)
-        x_train, y_train, x_test, y_test = get_train_test(randomized_data, "has_location")
+        x_train, y_train, x_test, y_test = get_train_test(randomized_data, "has_location", ratio / 10)
 
         trained_model = model.fit(x_train, y_train)
         get_results(x_test, y_test, trained_model, key)
 
 
-def main():
-    # data retrieval
-    cnx = dbmanager.init_connection()
-    data = pandas.DataFrame(run(cnx, sql_income), columns=["income", "num_returns", "per_capita_income", "has_location"])
-
-    # classifier runner
+def analysis(connection, query):
+    data = pandas.DataFrame(run(connection, query), columns=["income", "num_returns", "per_capita_income", "has_location"])
     run_all_classifiers(data)
+
+
+def main():
+    cnx = dbmanager.init_connection()
+    analysis(cnx, sql_income)
+    analysis(cnx, sql_diversity)
 
 
 if __name__ == '__main__':
