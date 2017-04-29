@@ -31,7 +31,7 @@ sql_diversity = "SELECT d.1, d.2, d.3, d.4, d.5, d.6, d.7, " \
                 "GROUP BY d.ZIPCODE"
 
 
-def run(connection, sql):
+def run_query(connection, sql):
     """ Run the SQL of this analysis against the database
 
     This module gathers all total income values for each zipcode and
@@ -150,7 +150,7 @@ def run_for_ratio_range(data, key, model):
 
 
 def analysis(connection, query, cols):
-    data = pandas.DataFrame(run(connection, query), columns=cols)
+    data = pandas.DataFrame(run_query(connection, query), columns=cols)
     return run_for_ratio_range(data, "random forest", RandomForestClassifier())
 
 
@@ -164,14 +164,16 @@ def plot_results(ratios, ratio_scores, title):
     plt.show()
 
 
-def main():
-    cnx = dbmanager.init_connection()
-    inc_ratios, inc_scores = analysis(cnx, sql_income, ["income", "num_returns", "per_capita_income", "has_location"])
+def run(connection):
+    if not connection:
+        connection = dbmanager.init_connection()
+
+    inc_ratios, inc_scores = analysis(connection, sql_income, ["income", "num_returns", "per_capita_income", "has_location"])
     plot_results(inc_ratios, inc_scores, "Income-Based Prediction")
 
-    div_ratios, div_scores = analysis(cnx, sql_diversity, ["1", "2", "3", "4", "5", "6", "7", "has_location"])
+    div_ratios, div_scores = analysis(connection, sql_diversity, ["1", "2", "3", "4", "5", "6", "7", "has_location"])
     plot_results(div_ratios, div_scores, "Demographic Prediction")
 
 
 if __name__ == '__main__':
-    main()
+    run(None)
