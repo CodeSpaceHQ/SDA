@@ -1,12 +1,14 @@
 import csv
 import dbmanager
 from exceptions import MySqlError
+import matplotlib.pyplot as plt
 
 # machine learning imports
 from sklearn import model_selection
 from sklearn.ensemble import RandomForestClassifier
 import pandas
 import numpy
+
 
 sql_income = "SELECT SUM(i.TOTAL_INCOME) as total_income, i.NUM_RETURNS as num_returns, " \
              "i.TOTAL_INCOME / i.NUM_RETURNS as per_capita_income, " \
@@ -27,8 +29,6 @@ sql_diversity = "SELECT d.1, d.2, d.3, d.4, d.5, d.6, d.7, " \
                 "ON	l.county = REPLACE(d.county, ' County', '') " \
                 "GROUP	BY d.county) as d LEFT OUTER JOIN starbucks as s ON d.ZIPCODE = s.ZIPCODE " \
                 "GROUP BY d.ZIPCODE"
-
-ml_models = {"random forest": RandomForestClassifier()}
 
 
 def run(connection, sql):
@@ -112,10 +112,12 @@ def get_train_test(data, target, ratio=0.3):
     :return:
     """
     train, test = model_selection.train_test_split(data, test_size=ratio)
+    randomized_train = binary_equalizer(train, equalize=1)
+    randomized_test = binary_equalizer(test, equalize=1)
 
-    x_train, y_train = split_data(train, target)
+    x_train, y_train = split_data(randomized_train, target)
     y_train = y_train.values.reshape((len(y_train.values.tolist()), 1))
-    x_test, y_test = split_data(test, target)
+    x_test, y_test = split_data(randomized_test, target)
     y_test = y_test.values.reshape((len(y_test.values.tolist()), 1))
 
     return x_train, y_train, x_test, y_test
@@ -124,32 +126,51 @@ def get_train_test(data, target, ratio=0.3):
 def get_results(x_test, y_test, trained_model, key):
     print("Results for " + key + ":")
     print(trained_model.score(x_test, y_test))
-
-
-def run_all_classifiers(data):
-    for key, model in ml_models.items():
-        run_for_ratio_range(data, key, model)
+    return trained_model.score(x_test, y_test)
 
 
 def run_for_ratio_range(data, key, model):
+    ratio_scores = list()
+    ratios = list()
+
     for ratio in range(1, 9):
-        # data preparation for machine learning
-        randomized_data = binary_equalizer(data, equalize=1)
-        x_train, y_train, x_test, y_test = get_train_test(randomized_data, "has_location", ratio / 10)
+        average_score = 0
 
-        trained_model = model.fit(x_train, y_train)
-        get_results(x_test, y_test, trained_model, key)
+        for x in range(10):
+            # data preparation for machine learning
+            x_train, y_train, x_test, y_test = get_train_test(data, "has_location", ratio / 10)
+
+            trained_model = model.fit(x_train, y_train)
+            average_score += get_results(x_test, y_test, trained_model, key)
+
+        ratio_scores.append(average_score / 10)
+        ratios.append(ratio / 10)
+
+    return ratios, ratio_scores
 
 
-def analysis(connection, query):
-    data = pandas.DataFrame(run(connection, query), columns=["income", "num_returns", "per_capita_income", "has_location"])
-    run_all_classifiers(data)
+def analysis(connection, query, cols):
+    data = pandas.DataFrame(run(connection, query), columns=cols)
+    return run_for_ratio_range(data, "random forest", RandomForestClassifier())
+
+
+def plot_results(ratios, ratio_scores, title):
+    plt.plot(ratios, ratio_scores)
+    plt.ylim([0, 1])
+    plt.xlim([0, 1])
+    plt.title(title)
+    plt.ylabel("Mean Accuracy")
+    plt.xlabel("Ratio of Test Data")
+    plt.show()
 
 
 def main():
     cnx = dbmanager.init_connection()
-    analysis(cnx, sql_income)
-    analysis(cnx, sql_diversity)
+    inc_ratios, inc_scores = analysis(cnx, sql_income, ["income", "num_returns", "per_capita_income", "has_location"])
+    plot_results(inc_ratios, inc_scores, "Income-Based Prediction")
+
+    div_ratios, div_scores = analysis(cnx, sql_diversity, ["1", "2", "3", "4", "5", "6", "7", "has_location"])
+    plot_results(div_ratios, div_scores, "Demographic Prediction")
 
 
 if __name__ == '__main__':
