@@ -7,7 +7,7 @@ function initMap() {
   var layer = new google.maps.FusionTablesLayer({
     query: {
       select: '\'Geocodable address\'',
-      from: '1WaohAetRIdT4JIseylhSqxjWpnxQPm6SiREMjhx1'
+      from: '10eIaqwKkNHAWeRvHMCGk18mTlrypPV7W7FpmVyC-'
     }
   });
 
