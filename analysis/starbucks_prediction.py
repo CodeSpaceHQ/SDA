@@ -1,6 +1,5 @@
-import csv
-import dbmanager
 from exceptions import MySqlError
+import dbmanager
 import matplotlib.pyplot as plt
 
 # machine learning imports
@@ -9,8 +8,8 @@ from sklearn.ensemble import RandomForestClassifier
 import pandas
 import numpy
 
-
-sql_income = "SELECT SUM(i.TOTAL_INCOME) as total_income, i.NUM_RETURNS as num_returns, " \
+INC_COLNAMES = ["income", "num_returns", "per_capita_income", "has_location"]
+SQL_INCOME = "SELECT SUM(i.TOTAL_INCOME) as total_income, i.NUM_RETURNS as num_returns, " \
              "i.TOTAL_INCOME / i.NUM_RETURNS as per_capita_income, " \
              "CASE " \
              "WHEN s.STORE_NUMBER IS NOT NULL THEN 1 " \
@@ -22,7 +21,8 @@ sql_income = "SELECT SUM(i.TOTAL_INCOME) as total_income, i.NUM_RETURNS as num_r
              "WHERE num_returns > 0 " \
              "GROUP	BY i.ZIPCODE "
 
-sql_diversity = "SELECT d.1, d.2, d.3, d.4, d.5, d.6, d.7, " \
+DIV_COLNAMES = ["1", "2", "3", "4", "5", "6", "7", "has_location"]
+SQL_DIVERSITY = "SELECT d.1, d.2, d.3, d.4, d.5, d.6, d.7, " \
                 "CASE WHEN s.STORE_NUMBER IS NOT NULL THEN 1 ELSE 0 END AS has_starbucks " \
                 "FROM (SELECT l.COUNTY, l.STATE, l.ZIPCODE, d.1, d.2, d.3, d.4, d.5, d.6, d.7 " \
                 "FROM	diversity d INNER	JOIN locations l " \
@@ -92,8 +92,8 @@ def binary_equalizer(data, equalize=0):
     :return: A randomized dataset with possible equal ratio of binary targets
     """
 
-    # Must happen before equalization to maintain integrity of results
-    randomized_data = data.reindex(numpy.random.permutation(data.index)).reset_index(drop=True) # randomize/reset index
+    # Must happen before equalization to maintain integrity of results. randomize/reset index
+    randomized_data = data.reindex(numpy.random.permutation(data.index)).reset_index(drop=True)
 
     if equalize:
         locations = randomized_data["has_location"].value_counts()[1]
@@ -104,7 +104,8 @@ def binary_equalizer(data, equalize=0):
 
 
 def get_train_test(data, target, ratio=0.3):
-    """ Splits the data into training and testing sets with an equal number of 0/1 sample types in the testing set.
+    """ Splits the data into training and testing sets with an equal number of 0/1
+    sample types in the testing set.
 
     :param data: The data to train and test on.
     :param target: The target column (prediction target)
@@ -147,7 +148,7 @@ def run_for_ratio_range(data, model):
     for ratio in range(1, 9):
         average_score = 0
 
-        for x in range(10):
+        for iteration in range(10):
             # data preparation for machine learning
             x_train, y_train, x_test, y_test = get_train_test(data, "has_location", ratio / 10)
 
@@ -198,10 +199,10 @@ def run(connection):
     if not connection:
         connection = dbmanager.init_connection()
 
-    inc_ratios, inc_scores = analysis(connection, sql_income, ["income", "num_returns", "per_capita_income", "has_location"])
+    inc_ratios, inc_scores = analysis(connection, SQL_INCOME, INC_COLNAMES)
     plot_results(inc_ratios, inc_scores, "Income-Based Prediction")
 
-    div_ratios, div_scores = analysis(connection, sql_diversity, ["1", "2", "3", "4", "5", "6", "7", "has_location"])
+    div_ratios, div_scores = analysis(connection, SQL_DIVERSITY, DIV_COLNAMES)
     plot_results(div_ratios, div_scores, "Demographic Prediction")
 
 
