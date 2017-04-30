@@ -104,15 +104,15 @@ def binary_equalizer(data, equalize=0):
 
 
 def get_train_test(data, target, ratio=0.3):
-    """
+    """ Splits the data into training and testing sets with an equal number of 0/1 sample types in the testing set.
 
-    :param data:
-    :param target:
-    :param ratio:
-    :return:
+    :param data: The data to train and test on.
+    :param target: The target column (prediction target)
+    :param ratio: Ratio of training and test split
+    :return: Separate objects for training and testing data, x matrix and y vector
     """
     train, test = model_selection.train_test_split(data, test_size=ratio)
-    randomized_train = binary_equalizer(train, equalize=1)
+    randomized_train = binary_equalizer(train, equalize=0)
     randomized_test = binary_equalizer(test, equalize=1)
 
     x_train, y_train = split_data(randomized_train, target)
@@ -123,13 +123,24 @@ def get_train_test(data, target, ratio=0.3):
     return x_train, y_train, x_test, y_test
 
 
-def get_results(x_test, y_test, trained_model, key):
-    print("Results for " + key + ":")
-    print(trained_model.score(x_test, y_test))
+def get_results(x_test, y_test, trained_model):
+    """ Returns the accuracy rate of the model.
+
+    :param x_test: Testing data to use for prediction
+    :param y_test: Testing data real values
+    :param trained_model: Trained classifier
+    :return:
+    """
     return trained_model.score(x_test, y_test)
 
 
-def run_for_ratio_range(data, key, model):
+def run_for_ratio_range(data, model):
+    """ Runs the training and validation for a variety of train/test splits.
+
+    :param data: Data for training and testing.
+    :param model: A classifier to use.
+    :return: Returns the ratios used for training and testing as well as the scores for each ratio.
+    """
     ratio_scores = list()
     ratios = list()
 
@@ -141,7 +152,7 @@ def run_for_ratio_range(data, key, model):
             x_train, y_train, x_test, y_test = get_train_test(data, "has_location", ratio / 10)
 
             trained_model = model.fit(x_train, y_train)
-            average_score += get_results(x_test, y_test, trained_model, key)
+            average_score += get_results(x_test, y_test, trained_model)
 
         ratio_scores.append(average_score / 10)
         ratios.append(ratio / 10)
@@ -150,11 +161,25 @@ def run_for_ratio_range(data, key, model):
 
 
 def analysis(connection, query, cols):
+    """ Predicts a starbucks location based on data selected by a query.
+
+    :param connection: Database connection.
+    :param query: Query to use for selecting x matrix data
+    :param cols: Column names for the x matrix data
+    :return:
+    """
     data = pandas.DataFrame(run_query(connection, query), columns=cols)
-    return run_for_ratio_range(data, "random forest", RandomForestClassifier())
+    return run_for_ratio_range(data, RandomForestClassifier())
 
 
 def plot_results(ratios, ratio_scores, title):
+    """ Plots the results of the prediction according to train/test split ratios.
+
+    :param ratios: Ratios used
+    :param ratio_scores: Scores per ratio
+    :param title: Title of the graph
+    :return: NA
+    """
     plt.plot(ratios, ratio_scores)
     plt.ylim([0, 1])
     plt.xlim([0, 1])
@@ -165,6 +190,11 @@ def plot_results(ratios, ratio_scores, title):
 
 
 def run(connection):
+    """ Standard analysis function used by the program.
+
+    :param connection: A database connection.
+    :return: NA
+    """
     if not connection:
         connection = dbmanager.init_connection()
 
