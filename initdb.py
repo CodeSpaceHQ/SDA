@@ -55,6 +55,17 @@ TABLES['locations'] = (
     "   PRIMARY KEY (`ZIPCODE`, `COUNTY`)"
     ") ENGINE=InnoDB")
 
+VIEWS = dict()
+VIEWS['diversity_view'] = ("CREATE VIEW `diversity_view`"
+                           "(`COUNTY, `STATE`, `INDEX`, `1`, `2`, `3`, `4`, "
+                           "`5`, `6`, `7`, `ZIPCODE`) "
+                           "AS "
+                           "SELECT d.*, l.zipcode"
+                           "FROM diversity AS d "
+                           "INNER JOIN locations AS l "
+                           "ON l.county = REPLACE(d.county, ' County', '')"
+                           "GROUP BY l.county")
+
 INDEX = dict()
 INDEX['starbucks_zipcode'] = ("CREATE INDEX `starbucks_zipcode` "
                               "ON `starbucks` (`ZIPCODE`)")
@@ -110,6 +121,9 @@ def init_database(connection):
 
         for name, sql in TABLES.items():  # Create each table in the database
             print('Creating table {}'.format(name))
+            cursor.execute(sql)
+        for name, sql in VIEWS.items():  # Create each view
+            print('Creating view {}'.format(name))
             cursor.execute(sql)
         for name, sql in INDEX.items():
             print('Creating index {}'.format(name))  # Create column indexes
