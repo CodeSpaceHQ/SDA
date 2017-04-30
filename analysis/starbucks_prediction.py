@@ -112,7 +112,7 @@ def get_train_test(data, target, ratio=0.3):
     :return: Separate objects for training and testing data, x matrix and y vector
     """
     train, test = model_selection.train_test_split(data, test_size=ratio)
-    randomized_train = binary_equalizer(train, equalize=0)
+    randomized_train = binary_equalizer(train, equalize=1)
     randomized_test = binary_equalizer(test, equalize=1)
 
     x_train, y_train = split_data(randomized_train, target)
