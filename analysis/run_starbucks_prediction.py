@@ -145,14 +145,14 @@ def run_for_ratio_range(data, model):
     ratio_scores = list()
     ratios = list()
 
-    for ratio in range(1, 9):
+    for ratio in range(1, 900):
         average_score = 0
 
         for iteration in range(10):
             # data preparation for machine learning
-            x_train, y_train, x_test, y_test = get_train_test(data, "has_location", ratio / 10)
+            x_train, y_train, x_test, y_test = get_train_test(data, "has_location", ratio / 1000)
 
-            trained_model = model.fit(x_train, y_train)
+            trained_model = model.fit(x_train, y_train.reshape([len(y_train),]))
             average_score += get_results(x_test, y_test, trained_model)
 
         ratio_scores.append(average_score / 10)
