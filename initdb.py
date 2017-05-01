@@ -55,11 +55,30 @@ TABLES['locations'] = (
     "   PRIMARY KEY (`ZIPCODE`, `COUNTY`)"
     ") ENGINE=InnoDB")
 
-INDEX = {}
+VIEWS = dict()
+VIEWS['diversity_view'] = ("CREATE VIEW `diversity_view`"
+                           "(`COUNTY, `STATE`, `INDEX`, `1`, `2`, `3`, `4`, "
+                           "`5`, `6`, `7`, `ZIPCODE`) "
+                           "AS "
+                           "SELECT d.*, l.zipcode"
+                           "FROM diversity AS d "
+                           "INNER JOIN locations AS l "
+                           "ON l.county = REPLACE(d.county, ' County', '')"
+                           "GROUP BY l.county")
+
+INDEX = dict()
 INDEX['starbucks_zipcode'] = ("CREATE INDEX `starbucks_zipcode` "
                               "ON `starbucks` (`ZIPCODE`)")
 INDEX['income_zipcode'] = ("CREATE INDEX `income_zipcode` "
                            "ON `starbucks` (`ZIPCODE`)")
+INDEX['starbucks_state'] = ("CREATE INDEX `starbucks_state` "
+                            "ON `starbucks` (`STATE`)")
+INDEX['starbucks_city'] = ("CREATE INDEX `starbucks_city` "
+                           "ON `starbucks` (`CITY`)")
+INDEX['income_zipcode'] = ("CREATE INDEX `income_zipcode` "
+                           "ON `income` (`ZIPCODE`)")
+INDEX['diversity_state'] = ("CREATE INDEX `diversity_state` "
+                            "ON `diversity` (`STATE`)")
 
 # SQL INSERT statements for each table
 SQL_INSERT = {}
@@ -73,7 +92,7 @@ SQL_INSERT['locations'] = "INSERT INTO locations " \
                           "VALUES(%s, %s, %s, %s);"
 
 # Load each data set
-DATASETS = {}
+DATASETS = dict()
 DATASETS['income'] = csv.reader(open(os.path.join('datasets',
                                                   'income-data.csv')))
 DATASETS['starbucks'] = csv.reader(open(os.path.join('datasets',
@@ -103,12 +122,16 @@ def init_database(connection):
         for name, sql in TABLES.items():  # Create each table in the database
             print('Creating table {}'.format(name))
             cursor.execute(sql)
+        for name, sql in VIEWS.items():  # Create each view
+            print('Creating view {}'.format(name))
+            cursor.execute(sql)
         for name, sql in INDEX.items():
             print('Creating index {}'.format(name))  # Create column indexes
             cursor.execute(sql)
 
         cursor.close()
     except mysql.connector.Error as err:
+        print(err)
         raise MySqlError(message='There was a problem initializing'
                                  ' the database.',
                          args=err.args)
