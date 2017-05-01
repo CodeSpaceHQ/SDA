@@ -7,27 +7,34 @@ function initMap() {
   var layer = new google.maps.FusionTablesLayer({
     query: {
       select: '\'Geocodable address\'',
-      from: '10eIaqwKkNHAWeRvHMCGk18mTlrypPV7W7FpmVyC-'
-    },
-    heatmap: {
-      enabled: true,
-      valueField: 'AGI_STUB'
+      from: '10eIaqwKkNHAWeRvHMCGk18mTlrypPV7W7FpmVyC-',
+      where: 'TOTAL_INCOME > 0 AND STATE = \'TX\'',
+      styles : [{
+          polygonOptions: {
+            fillColor: '#3E2723', // brown
+            fillOpacity: 1
+          }
+        },
+        {
+          where: 'AGI_STUB = 6',
+          polygonOptions: {
+            fillColor: '#00BCD4',
+            fillOpacity: 1
+          }
+        }
+      ]
     }
   });
 
   // testing choropleth layer
-  var choro_layer = new google.maps.Data();
-  choro_layer.loadGeoJson('');
-
-  choro_layer.setStyle(function(feature) {
-    return {
-      fillColor: '',
-      fillOpacity: 0.8,
-      strokeColor: '',
-      strokeWeight: 1,
-      zIndex: 1
-    };
+  var starbucks = new google.maps.FusionTablesLayer({
+    query:{
+      select: '\'Geocodable address\'',
+      from: '1yCjcUA_wnMV5hDnj6aiS0eN0dS_3yvTiz-jvlVyB',
+      where: 'STATE = \'TX\''
+    }
   });
 
   layer.setMap(map);
+  starbucks.setMap(map);
 }
