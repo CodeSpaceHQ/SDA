@@ -64,7 +64,8 @@ VIEWS['diversity_view'] = ("CREATE VIEW `diversity_view`"
                            "FROM diversity AS d "
                            "INNER JOIN locations AS l "
                            "ON l.county = REPLACE(d.county, ' County', '')"
-                           "GROUP BY l.county")
+                           "GROUP BY l.county "
+                           "WITH CASCADED CHECK OPTION")
 
 INDEX = dict()
 INDEX['starbucks_zipcode'] = ("CREATE INDEX `starbucks_zipcode` "
