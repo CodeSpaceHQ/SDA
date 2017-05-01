@@ -57,15 +57,22 @@ TABLES['locations'] = (
 
 VIEWS = dict()
 VIEWS['diversity_view'] = ("CREATE VIEW `diversity_view`"
-                           "(`COUNTY, `STATE`, `INDEX`, `1`, `2`, `3`, `4`, "
+                           "(`COUNTY`, `STATE`, `INDEX`, `1`, `2`, `3`, `4`, "
                            "`5`, `6`, `7`, `ZIPCODE`) "
                            "AS "
-                           "SELECT d.*, l.zipcode"
+                           "SELECT d.*, l.zipcode "
                            "FROM diversity AS d "
                            "INNER JOIN locations AS l "
                            "ON l.county = REPLACE(d.county, ' County', '')"
-                           "GROUP BY l.county "
-                           "WITH CASCADED CHECK OPTION")
+                           "GROUP BY l.county ")
+
+VIEWS['population_view'] = ("CREATE VIEW `population_view`"
+                            "(`STATE`, `ZIPCODE`, `POPULATION`) "
+                            "AS "
+                            "SELECT state, zipcode, SUM(num_returns) "
+                            "FROM income "
+                            "WHERE num_returns > 0 "
+                            "GROUP BY zipcode ")
 
 INDEX = dict()
 INDEX['starbucks_zipcode'] = ("CREATE INDEX `starbucks_zipcode` "
