@@ -24,10 +24,8 @@ SQL_INCOME = "SELECT SUM(i.TOTAL_INCOME) as total_income, i.NUM_RETURNS as num_r
 DIV_COLNAMES = ["1", "2", "3", "4", "5", "6", "7", "has_location"]
 SQL_DIVERSITY = "SELECT d.1, d.2, d.3, d.4, d.5, d.6, d.7, " \
                 "CASE WHEN s.STORE_NUMBER IS NOT NULL THEN 1 ELSE 0 END AS has_starbucks " \
-                "FROM (SELECT l.COUNTY, l.STATE, l.ZIPCODE, d.1, d.2, d.3, d.4, d.5, d.6, d.7 " \
-                "FROM	diversity d INNER	JOIN locations l " \
-                "ON	l.county = REPLACE(d.county, ' County', '') " \
-                "GROUP	BY d.county) as d LEFT OUTER JOIN starbucks as s ON d.ZIPCODE = s.ZIPCODE " \
+                "FROM (SELECT * FROM starbucksdb.diversity_view) " \
+                "as d LEFT OUTER JOIN starbucks as s ON d.ZIPCODE = s.ZIPCODE " \
                 "GROUP BY d.ZIPCODE"
 
 
@@ -145,18 +143,18 @@ def run_for_ratio_range(data, model):
     ratio_scores = list()
     ratios = list()
 
-    for ratio in range(1, 900):
+    for ratio in range(1, 99):
         average_score = 0
 
-        for iteration in range(10):
+        for iteration in range(1):
             # data preparation for machine learning
-            x_train, y_train, x_test, y_test = get_train_test(data, "has_location", ratio / 1000)
+            x_train, y_train, x_test, y_test = get_train_test(data, "has_location", ratio / 100)
 
-            trained_model = model.fit(x_train, y_train.reshape([len(y_train),]))
+            trained_model = model.fit(x_train, y_train.reshape([len(y_train), ]))
             average_score += get_results(x_test, y_test, trained_model)
 
         ratio_scores.append(average_score / 10)
-        ratios.append(ratio / 10)
+        ratios.append(ratio / 100)
 
     return ratios, ratio_scores
 
@@ -181,13 +179,18 @@ def plot_results(ratios, ratio_scores, title):
     :param title: Title of the graph
     :return: NA
     """
-    plt.plot(ratios, ratio_scores)
-    plt.ylim([0, 1])
-    plt.xlim([0, 1])
-    plt.title(title)
-    plt.ylabel("Mean Accuracy")
-    plt.xlabel("Ratio of Test Data")
-    plt.show()
+    print(title)
+    print("ratios: ")
+    print(ratios)
+    print("scores: ")
+    print(ratio_scores)
+    # plt.plot(ratios, ratio_scores)
+    # plt.ylim([0, 1])
+    # plt.xlim([0, 1])
+    # plt.title(title)
+    # plt.ylabel("Mean Accuracy")
+    # plt.xlabel("Ratio of Test Data")
+    # plt.show()
 
 
 def run(connection):
