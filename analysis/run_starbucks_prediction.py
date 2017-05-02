@@ -18,7 +18,7 @@ SQL_INCOME = "SELECT SUM(i.TOTAL_INCOME) as total_income, i.NUM_RETURNS as num_r
              "FROM	income as i " \
              "LEFT	OUTER JOIN starbucks as s " \
              "ON	i.ZIPCODE = s.ZIPCODE " \
-             "WHERE num_returns > 0 " \
+             "WHERE num_returns > 0 and i.ZIPCODE != '00000' " \
              "GROUP	BY i.ZIPCODE "
 
 DIV_COLNAMES = ["1", "2", "3", "4", "5", "6", "7", "has_location"]
