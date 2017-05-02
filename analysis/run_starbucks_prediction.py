@@ -18,7 +18,7 @@ SQL_INCOME = "SELECT SUM(i.TOTAL_INCOME) as total_income, i.NUM_RETURNS as num_r
              "FROM	income as i " \
              "LEFT	OUTER JOIN starbucks as s " \
              "ON	i.ZIPCODE = s.ZIPCODE " \
-             "WHERE num_returns > 0 " \
+             "WHERE num_returns > 0 and i.ZIPCODE != '00000' " \
              "GROUP	BY i.ZIPCODE "
 
 DIV_COLNAMES = ["1", "2", "3", "4", "5", "6", "7", "has_location"]
@@ -148,15 +148,25 @@ def run_for_ratio_range(data, model):
 
         for iteration in range(10):
             # data preparation for machine learning
-            x_train, y_train, x_test, y_test = get_train_test(data, "has_location", ratio / 100)
-
-            trained_model = model.fit(x_train, y_train.reshape([len(y_train), ]))
-            average_score += get_results(x_test, y_test, trained_model)
+            average_score += simulation_iteration(data, ratio, model)
 
         ratio_scores.append(average_score / 10)
         ratios.append(ratio / 100)
 
     return ratios, ratio_scores
+
+
+def simulation_iteration(data, ratio, model):
+    """ Takes the data, a splitting ratio, and a classifier and returns the score.
+
+    :param data: The data for training and testing
+    :param ratio: The ratio for train/test split
+    :param model: The classifier
+    :return: The score for the split and classifier
+    """
+    x_train, y_train, x_test, y_test = get_train_test(data, "has_location", ratio / 100)
+    trained_model = model.fit(x_train, y_train.reshape([len(y_train), ]))
+    return get_results(x_test, y_test, trained_model)
 
 
 def analysis(connection, query, cols):
