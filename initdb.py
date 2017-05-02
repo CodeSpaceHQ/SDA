@@ -73,6 +73,7 @@ VIEWS['population_view'] = ("CREATE VIEW `population_view`"
                             "numdep) "
                             "FROM income "
                             "WHERE num_returns > 0 "
+                            "AND zipcode <> '00000' "
                             "GROUP BY zipcode ")
 
 INDEX = dict()
