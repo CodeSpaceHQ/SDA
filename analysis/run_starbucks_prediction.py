@@ -143,10 +143,10 @@ def run_for_ratio_range(data, model):
     ratio_scores = list()
     ratios = list()
 
-    for ratio in range(1, 99):
+    for ratio in range(5, 95):
         average_score = 0
 
-        for iteration in range(1):
+        for iteration in range(10):
             # data preparation for machine learning
             x_train, y_train, x_test, y_test = get_train_test(data, "has_location", ratio / 100)
 
@@ -171,7 +171,7 @@ def analysis(connection, query, cols):
     return run_for_ratio_range(data, RandomForestClassifier())
 
 
-def plot_results(ratios, ratio_scores, title):
+def plot_results(ratios, ratio_scores):
     """ Plots the results of the prediction according to train/test split ratios.
 
     :param ratios: Ratios used
@@ -179,18 +179,15 @@ def plot_results(ratios, ratio_scores, title):
     :param title: Title of the graph
     :return: NA
     """
-    print(title)
-    print("ratios: ")
-    print(ratios)
-    print("scores: ")
-    print(ratio_scores)
-    # plt.plot(ratios, ratio_scores)
-    # plt.ylim([0, 1])
-    # plt.xlim([0, 1])
-    # plt.title(title)
-    # plt.ylabel("Mean Accuracy")
-    # plt.xlabel("Ratio of Test Data")
-    # plt.show()
+    plt.plot(ratios[0], ratio_scores[0], "r", label="Income Data")
+    plt.plot(ratios[1], ratio_scores[1], "b", label="Demographic Data")
+    plt.ylim([0, 1])
+    plt.xlim([0, 1])
+    plt.title("Comparison of Datasets")
+    plt.legend()
+    plt.ylabel("Mean Accuracy")
+    plt.xlabel("Ratio of Test Data")
+    plt.show()
 
 
 def run(connection):
@@ -199,14 +196,20 @@ def run(connection):
     :param connection: A database connection.
     :return: NA
     """
+    ratios = list()
+    scores = list()
+
     if not connection:
         connection = dbmanager.init_connection()
 
     inc_ratios, inc_scores = analysis(connection, SQL_INCOME, INC_COLNAMES)
-    plot_results(inc_ratios, inc_scores, "Income-Based Prediction")
+    ratios.append(inc_ratios)
+    scores.append(inc_scores)
 
     div_ratios, div_scores = analysis(connection, SQL_DIVERSITY, DIV_COLNAMES)
-    plot_results(div_ratios, div_scores, "Demographic Prediction")
+    ratios.append(div_ratios)
+    scores.append(div_scores)
+    plot_results(ratios, scores)
 
 
 if __name__ == '__main__':
