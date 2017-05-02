@@ -148,15 +148,25 @@ def run_for_ratio_range(data, model):
 
         for iteration in range(10):
             # data preparation for machine learning
-            x_train, y_train, x_test, y_test = get_train_test(data, "has_location", ratio / 100)
-
-            trained_model = model.fit(x_train, y_train.reshape([len(y_train), ]))
-            average_score += get_results(x_test, y_test, trained_model)
+            average_score += simulation_iteration(data, ratio, model)
 
         ratio_scores.append(average_score / 10)
         ratios.append(ratio / 100)
 
     return ratios, ratio_scores
+
+
+def simulation_iteration(data, ratio, model):
+    """ Takes the data, a splitting ratio, and a classifier and returns the score.
+
+    :param data: The data for training and testing
+    :param ratio: The ratio for train/test split
+    :param model: The classifier
+    :return: The score for the split and classifier
+    """
+    x_train, y_train, x_test, y_test = get_train_test(data, "has_location", ratio / 100)
+    trained_model = model.fit(x_train, y_train.reshape([len(y_train), ]))
+    return get_results(x_test, y_test, trained_model)
 
 
 def analysis(connection, query, cols):
