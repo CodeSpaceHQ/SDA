@@ -66,16 +66,6 @@ VIEWS['diversity_view'] = ("CREATE VIEW `diversity_view`"
                            "ON l.county = REPLACE(d.county, ' County', '')"
                            "GROUP BY l.county ")
 
-VIEWS['population_view'] = ("CREATE VIEW `population_view`"
-                            "(`STATE`, `ZIPCODE`, `POPULATION`) "
-                            "AS "
-                            "SELECT state, zipcode, SUM(num_returns) + SUM("
-                            "numdep) "
-                            "FROM income "
-                            "WHERE num_returns > 0 "
-                            "AND zipcode <> '00000' "
-                            "GROUP BY zipcode ")
-
 INDEX = dict()
 INDEX['starbucks_zipcode'] = ("CREATE INDEX `starbucks_zipcode` "
                               "ON `starbucks` (`ZIPCODE`)")
@@ -91,7 +81,7 @@ INDEX['diversity_state'] = ("CREATE INDEX `diversity_state` "
                             "ON `diversity` (`STATE`)")
 
 # SQL INSERT statements for each table
-SQL_INSERT = {}
+SQL_INSERT = dict()
 SQL_INSERT['income'] = "INSERT INTO income " \
                        "VALUES(%s, %s, %s, %s, %s, %s);"
 SQL_INSERT['starbucks'] = "INSERT INTO starbucks " \
