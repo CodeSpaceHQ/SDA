@@ -2,242 +2,251 @@
 
 <html lang="en">
 
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="description" content="A front-end template that helps you build fast, modern mobile web apps.">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
-        <title>Starbucks Demographics Analysis</title>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="A front-end template that helps you build fast, modern mobile web apps.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+    <title>Starbucks Demographics Analysis</title>
 
-        <!-- Add to homescreen for Chrome on Android -->
-        <meta name="mobile-web-app-capable" content="yes">
-        <link rel="icon" sizes="192x192" href="images/android-desktop.png">
+    <!-- Add to homescreen for Chrome on Android -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="icon" sizes="192x192" href="images/android-desktop.png">
 
-        <!-- Add to homescreen for Safari on iOS -->
-        <meta name="apple-mobile-web-app-capable" content="yes">
-        <meta name="apple-mobile-web-app-status-bar-style" content="black">
-        <meta name="apple-mobile-web-app-title" content="Material Design Lite">
-        <link rel="apple-touch-icon-precomposed" href="images/ios-desktop.png">
+    <!-- Add to homescreen for Safari on iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Material Design Lite">
+    <link rel="apple-touch-icon-precomposed" href="images/ios-desktop.png">
 
-        <!-- Tile icon for Win8 (144x144 + tile color) -->
-        <meta name="msapplication-TileImage" content="images/touch/ms-touch-icon-144x144-precomposed.png">
-        <meta name="msapplication-TileColor" content="#3372DF">
+    <!-- Tile icon for Win8 (144x144 + tile color) -->
+    <meta name="msapplication-TileImage" content="images/touch/ms-touch-icon-144x144-precomposed.png">
+    <meta name="msapplication-TileColor" content="#3372DF">
 
-        <link rel="shortcut icon" href="images/favicon.png">
+    <link rel="shortcut icon" href="images/favicon.png">
 
-        <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
 
 
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-        <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.red-indigo.min.css" />
-        <link rel="stylesheet" href="styles.css">
-        <style>
-            #view-source {
-                position: fixed;
-                display: block;
-                right: 0;
-                bottom: 0;
-                margin-right: 40px;
-                margin-bottom: 40px;
-                z-index: 900;
-            }
-        </style>
-    </head>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.red-indigo.min.css" />
+    <link rel="stylesheet" href="styles.css">
+    <style>
+      #view-source {
+        position: fixed;
+        display: block;
+        right: 0;
+        bottom: 0;
+        margin-right: 40px;
+        margin-bottom: 40px;
+        z-index: 900;
+      }
 
-    <body class="mdl-demo mdl-color--grey-100 mdl-color-text--grey-700 mdl-base">
-        <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
-            <header class="mdl-layout__header mdl-layout__header--scroll mdl-color--primary">
-                <div class="mdl-layout--large-screen-only mdl-layout__header-row">
-                </div>
-                <div class="mdl-layout--large-screen-only mdl-layout__header-row">
-                    <h3>Backrow Ballers </br> Starbucks Demographic Analysis</h3>
-                </div>
-                <div class="mdl-layout--large-screen-only mdl-layout__header-row">
-                </div>
-                <div class="mdl-layout__tab-bar mdl-js-ripple-effect mdl-color--primary-dark">
-                    <a href="#overview" class="mdl-layout__tab is-active">Overview</a>
-                    <a href="#proposal" class="mdl-layout__tab">Proposal</a>
-                    <a href="#funfacts" class="mdl-layout__tab">Fun Facts</a>
-                    <a href="#maps" class="mdl-layout__tab">Heat Maps</a>
-                    <a href="#prediction" class="mdl-layout__tab">Predictions</a>
+      <style>#map_canvas {
+        height: 100%;
+      }
+    </style>
+    </style>
 
-                </div>
+
+  </head>
+
+  <body class="mdl-demo mdl-color--grey-100 mdl-color-text--grey-700 mdl-base">
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+      <header class="mdl-layout__header mdl-layout__header--scroll mdl-color--primary">
+        <div class="mdl-layout--large-screen-only mdl-layout__header-row">
+        </div>
+        <div class="mdl-layout--large-screen-only mdl-layout__header-row">
+          <h3>Backrow Ballers </br> Starbucks Demographic Analysis</h3>
+        </div>
+        <div class="mdl-layout--large-screen-only mdl-layout__header-row">
+        </div>
+        <div class="mdl-layout__tab-bar mdl-js-ripple-effect mdl-color--primary-dark">
+          <a href="#overview" class="mdl-layout__tab is-active">Overview</a>
+          <a href="#proposal" class="mdl-layout__tab">Proposal</a>
+          <a href="#funfacts" class="mdl-layout__tab">Fun Facts</a>
+          <a href="#maps" class="mdl-layout__tab">Heat Maps</a>
+          <a href="#prediction" class="mdl-layout__tab">Predictions</a>
+
+        </div>
+      </header>
+      <main class="mdl-layout__content">
+        <div class="mdl-layout__tab-panel is-active" id="overview">
+          <section class="section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp">
+            <header class="section__play-btn mdl-cell mdl-cell--3-col-desktop mdl-cell--2-col-tablet mdl-cell--4-col-phone mdl-color--red-600 mdl-color-text--white">
+              <i class="material-icons">new_releases</i>
             </header>
-            <main class="mdl-layout__content">
-                <div class="mdl-layout__tab-panel is-active" id="overview">
-                    <section class="section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp">
-                        <header class="section__play-btn mdl-cell mdl-cell--3-col-desktop mdl-cell--2-col-tablet mdl-cell--4-col-phone mdl-color--red-600 mdl-color-text--white">
-                            <i class="material-icons">new_releases</i>
-                        </header>
-                        <div class="mdl-card mdl-cell mdl-cell--9-col-desktop mdl-cell--6-col-tablet mdl-cell--4-col-phone">
-                            <div class="mdl-card__supporting-text">
-                                <h4>A study of economic and demographic relationships in relation to Starbucks locations</h4>
-                                <p>
-                                    This is the project page for the Backrow Ballers CS 4354 class project.
-                                </p>
-                            </div>
-                        </div>
-                    </section>
-                    <section class="section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp">
-                        <div class="mdl-card mdl-cell mdl-cell--12-col">
-                            <div class="mdl-card__supporting-text">
-                                <h4>Our Datasets</h4>
-                                <ul class="mdl-list">
-                                    <li class="mdl-list__item mdl-list__item--two-line">
-                                        <span class="mdl-list__item-primary-content">
+            <div class="mdl-card mdl-cell mdl-cell--9-col-desktop mdl-cell--6-col-tablet mdl-cell--4-col-phone">
+              <div class="mdl-card__supporting-text">
+                <h4>A study of economic and demographic relationships in relation to Starbucks locations</h4>
+                <p>
+                  This is the project page for the Backrow Ballers CS 4354 class project.
+                </p>
+              </div>
+            </div>
+          </section>
+          <section class="section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp">
+            <div class="mdl-card mdl-cell mdl-cell--12-col">
+              <div class="mdl-card__supporting-text">
+                <h4>Our Datasets</h4>
+                <ul class="mdl-list">
+                  <li class="mdl-list__item mdl-list__item--two-line">
+                    <span class="mdl-list__item-primary-content">
                                       <i class="material-icons mdl-list__item-avatar">business</i>
                                       <span>Starbucks Locations </span>
-                                        <span class="mdl-list__item-sub-title">This dataset includes a record for every Starbucks or subsidiary store location currently in operation as of February 2017.</span>
-                                        </span>
-                                        <span class="mdl-list__item-secondary-content">
+                    <span class="mdl-list__item-sub-title">This dataset includes a record for every Starbucks or subsidiary store location currently in operation as of February 2017.</span>
+                    </span>
+                    <span class="mdl-list__item-secondary-content">
                                       <a class="mdl-list__item-secondary-action" href="https://www.kaggle.com/starbucks/store-locations"><i class="material-icons">web</i></a>
                                     </span>
-                                    </li>
-                                    <li class="mdl-list__item mdl-list__item--two-line">
-                                        <span class="mdl-list__item-primary-content">
+                  </li>
+                  <li class="mdl-list__item mdl-list__item--two-line">
+                    <span class="mdl-list__item-primary-content">
                                       <i class="material-icons mdl-list__item-avatar">language</i>
                                       <span>Zip Code Income Data </span>
-                                        <span class="mdl-list__item-sub-title">This study provides detailed tabulations of individual income tax return data at the state and ZIP code level.</span>
-                                        </span>
-                                        <span class="mdl-list__item-secondary-content">
+                    <span class="mdl-list__item-sub-title">This study provides detailed tabulations of individual income tax return data at the state and ZIP code level.</span>
+                    </span>
+                    <span class="mdl-list__item-secondary-content">
                                       <a class="mdl-list__item-secondary-action" href="https://catalog.data.gov/dataset/zip-code-data"><i class="material-icons">web</i></a>
                                     </span>
-                                    </li>
-                                    <li class="mdl-list__item mdl-list__item--two-line">
-                                        <span class="mdl-list__item-primary-content">
+                  </li>
+                  <li class="mdl-list__item mdl-list__item--two-line">
+                    <span class="mdl-list__item-primary-content">
                                       <i class="material-icons mdl-list__item-avatar">perm_identity</i>
                                       <span>Diversity Dataset</span>
-                                        <span class="mdl-list__item-sub-title">This dataset includes diversity metrics for each county</span>
-                                        </span>
-                                        <span class="mdl-list__item-secondary-content">
+                    <span class="mdl-list__item-sub-title">This dataset includes diversity metrics for each county</span>
+                    </span>
+                    <span class="mdl-list__item-secondary-content">
                                       <a class="mdl-list__item-secondary-action" href="https://github.com/kdallas2/diversity/blob/master/di.csv"><i class="material-icons">web</i></a>
                                     </span>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </section>
-                    <section class="section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp">
-                        <div class="mdl-card mdl-cell mdl-cell--12-col">
-                            <div class="mdl-card__supporting-text">
-                                <h4>Objectives</h4>
-                                <ul class='mdl-list'>
-                                    <li class="mdl-list__item">Scripts for auto setup of database (if it does not exist)</li>
-                                    <li class="mdl-list__item">Appropriate tables and relationships to model the data</li>
-                                    <li class="mdl-list__item">Scripts that analyze and display information about the data in a WebUI</li>
-                                    <li class="mdl-list__item">Report that reviews any interesting findings using the WebUI</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </section>
-                    <section class="section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp">
-                        <div class="mdl-card mdl-cell mdl-cell--12-col">
-                            <div class="mdl-card__supporting-text">
-                                <h4>Insights</h4>
-                                <ul class='mdl-list'>
-                                    <p>
-                                        There are over 10,000 Starbucks coffee shops across the nation and using this dataset in conjunction with the diversity and income dataset we are able to address these topics:
-                                    </p>
-                                    <li class="mdl-list__item">How are the locations of Starbucks stores related to the average amount of income per person?</li>
-                                    <li class="mdl-list__item">How do Starbucks locations relate to the diversity of a region?</li>
-                                    <li class="mdl-list__item">Map of Starbucks locations in the US.</li>
-                                    <li class="mdl-list__item">Areas that have a higher or lower density than expected (as compared to trends).</li>
-                                    <li class="mdl-list__item">Explore relative distances between Starbucks locations.</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </section>
-                    <section class="section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp">
-                        <div class="mdl-card mdl-cell mdl-cell--12-col">
-                            <div class="mdl-card__supporting-text">
-                                <h4>Tools</h4>
-                                <ul class="mdl-list">
-                                    <li class="mdl-list__item mdl-list__item--two-line">
-                                        <span class="mdl-list__item-primary-content">
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </section>
+          <section class="section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp">
+            <div class="mdl-card mdl-cell mdl-cell--12-col">
+              <div class="mdl-card__supporting-text">
+                <h4>Objectives</h4>
+                <ul class='mdl-list'>
+                  <li class="mdl-list__item">Scripts for auto setup of database (if it does not exist)</li>
+                  <li class="mdl-list__item">Appropriate tables and relationships to model the data</li>
+                  <li class="mdl-list__item">Scripts that analyze and display information about the data in a WebUI</li>
+                  <li class="mdl-list__item">Report that reviews any interesting findings using the WebUI</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+          <section class="section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp">
+            <div class="mdl-card mdl-cell mdl-cell--12-col">
+              <div class="mdl-card__supporting-text">
+                <h4>Insights</h4>
+                <ul class='mdl-list'>
+                  <p>
+                    There are over 10,000 Starbucks coffee shops across the nation and using this dataset in conjunction with the diversity and income dataset we are able to address these topics:
+                  </p>
+                  <li class="mdl-list__item">How are the locations of Starbucks stores related to the average amount of income per person?</li>
+                  <li class="mdl-list__item">How do Starbucks locations relate to the diversity of a region?</li>
+                  <li class="mdl-list__item">Map of Starbucks locations in the US.</li>
+                  <li class="mdl-list__item">Areas that have a higher or lower density than expected (as compared to trends).</li>
+                  <li class="mdl-list__item">Explore relative distances between Starbucks locations.</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+          <section class="section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp">
+            <div class="mdl-card mdl-cell mdl-cell--12-col">
+              <div class="mdl-card__supporting-text">
+                <h4>Tools</h4>
+                <ul class="mdl-list">
+                  <li class="mdl-list__item mdl-list__item--two-line">
+                    <span class="mdl-list__item-primary-content">
                                       <i class="material-icons mdl-list__item-avatar">code</i>
                                       <span>Python</span>
-                                        <span class="mdl-list__item-sub-title">For database connection and analysis</span>
-                                        </span>
-                                    </li>
-                                    <li class="mdl-list__item mdl-list__item--two-line">
-                                        <span class="mdl-list__item-primary-content">
+                    <span class="mdl-list__item-sub-title">For database connection and analysis</span>
+                    </span>
+                  </li>
+                  <li class="mdl-list__item mdl-list__item--two-line">
+                    <span class="mdl-list__item-primary-content">
                                       <i class="material-icons mdl-list__item-avatar">query_builder</i>
                                       <span>MySQL</span>
-                                        <span class="mdl-list__item-sub-title">For modeling and queries</span>
-                                        </span>
-                                    </li>
-                                    <li class="mdl-list__item mdl-list__item--two-line">
-                                        <span class="mdl-list__item-primary-content">
+                    <span class="mdl-list__item-sub-title">For modeling and queries</span>
+                    </span>
+                  </li>
+                  <li class="mdl-list__item mdl-list__item--two-line">
+                    <span class="mdl-list__item-primary-content">
                                       <i class="material-icons mdl-list__item-avatar">group_work</i>
                                       <span>GitHub</span>
-                                        <span class="mdl-list__item-sub-title">For project management, coordination, and hosting code, documentation, and web UI</span>
-                                        </span>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </section>
-                    <section class="section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp">
-                        <div class="mdl-card mdl-cell mdl-cell--12-col">
-                            <div class="mdl-card__supporting-text mdl-grid mdl-grid--no-spacing">
-                                <h4 class="mdl-cell mdl-cell--12-col">People</h4>
-                                <div class="section__circle-container mdl-cell mdl-cell--2-col mdl-cell--1-col-phone">
-                                    <div class="section__circle-container__circle mdl-color--primary"></div>
-                                </div>
-                                <div class="section__text mdl-cell mdl-cell--10-col-desktop mdl-cell--6-col-tablet mdl-cell--3-col-phone">
-                                    <h5>Alexander Clines</h5> Cool dude. Check him out on <a href="https://github.com/asclines/">GitHub</a>.
-                                </div>
-                                <div class="section__circle-container mdl-cell mdl-cell--2-col mdl-cell--1-col-phone">
-                                    <div class="section__circle-container__circle mdl-color--primary"></div>
-                                </div>
-                                <div class="section__text mdl-cell mdl-cell--10-col-desktop mdl-cell--6-col-tablet mdl-cell--3-col-phone">
-                                    <h5>Isaac Griswold-Steiner</h5> Cool dude. Check him out on <a href="https://github.com/ASAAR">GitHub</a>.
-                                </div>
-                                <div class="section__circle-container mdl-cell mdl-cell--2-col mdl-cell--1-col-phone">
-                                    <div class="section__circle-container__circle mdl-color--primary"></div>
-                                </div>
-                                <div class="section__text mdl-cell mdl-cell--10-col-desktop mdl-cell--6-col-tablet mdl-cell--3-col-phone">
-                                    <h5>Dane Lowrey</h5> Cool dude. Check him out on <a href="https://github.com/dlowrey">GitHub</a>.
-                                </div>
-                                <div class="section__circle-container mdl-cell mdl-cell--2-col mdl-cell--1-col-phone">
-                                    <div class="section__circle-container__circle mdl-color--primary"></div>
-                                </div>
-                                <div class="section__text mdl-cell mdl-cell--10-col-desktop mdl-cell--6-col-tablet mdl-cell--3-col-phone">
-                                    <h5>Kevin Taing</h5> He's alright. Check him out on <a href="https://github.com/kevintaing86">GitHub</a>.
-                                </div>
-                            </div>
-                        </div>
-                    </section>
+                    <span class="mdl-list__item-sub-title">For project management, coordination, and hosting code, documentation, and web UI</span>
+                    </span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </section>
+          <section class="section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp">
+            <div class="mdl-card mdl-cell mdl-cell--12-col">
+              <div class="mdl-card__supporting-text mdl-grid mdl-grid--no-spacing">
+                <h4 class="mdl-cell mdl-cell--12-col">People</h4>
+                <div class="section__circle-container mdl-cell mdl-cell--2-col mdl-cell--1-col-phone">
+                  <div class="section__circle-container__circle mdl-color--primary"></div>
                 </div>
-                <div class="mdl-layout__tab-panel" id="proposal">
-                  <div id="proposal-page"></div>
-                  <script>
-                    $("#proposal-page").load("html/proposal.html")
-                  </script>
+                <div class="section__text mdl-cell mdl-cell--10-col-desktop mdl-cell--6-col-tablet mdl-cell--3-col-phone">
+                  <h5>Alexander Clines</h5> Cool dude. Check him out on <a href="https://github.com/asclines/">GitHub</a>.
                 </div>
-                <div class="mdl-layout__tab-panel" id="funfacts">
-                  <div id="funfacts-page"></div>
-                  <script>
-                    $("#funfacts-page").load("html/funfacts.html")
-                  </script>
+                <div class="section__circle-container mdl-cell mdl-cell--2-col mdl-cell--1-col-phone">
+                  <div class="section__circle-container__circle mdl-color--primary"></div>
                 </div>
-                <div class="mdl-layout__tab-panel" id="maps">
-                  <div id="maps-page"></div>
-                  <script>
-                    $("#maps-page").load("html/heatmaps.html")
-                  </script>
+                <div class="section__text mdl-cell mdl-cell--10-col-desktop mdl-cell--6-col-tablet mdl-cell--3-col-phone">
+                  <h5>Isaac Griswold-Steiner</h5> Cool dude. Check him out on <a href="https://github.com/ASAAR">GitHub</a>.
                 </div>
-                <div class="mdl-layout__tab-panel" id="prediction">
-                  <div id="prediction-page"></div>
-                  <script>
-                    $("#prediction-page").load("html/prediction.html")
-                  </script>
+                <div class="section__circle-container mdl-cell mdl-cell--2-col mdl-cell--1-col-phone">
+                  <div class="section__circle-container__circle mdl-color--primary"></div>
                 </div>
-            </main>
+                <div class="section__text mdl-cell mdl-cell--10-col-desktop mdl-cell--6-col-tablet mdl-cell--3-col-phone">
+                  <h5>Dane Lowrey</h5> Cool dude. Check him out on <a href="https://github.com/dlowrey">GitHub</a>.
+                </div>
+                <div class="section__circle-container mdl-cell mdl-cell--2-col mdl-cell--1-col-phone">
+                  <div class="section__circle-container__circle mdl-color--primary"></div>
+                </div>
+                <div class="section__text mdl-cell mdl-cell--10-col-desktop mdl-cell--6-col-tablet mdl-cell--3-col-phone">
+                  <h5>Kevin Taing</h5> He's alright. Check him out on <a href="https://github.com/kevintaing86">GitHub</a>.
+                </div>
+              </div>
+            </div>
+          </section>
         </div>
-        <a href="https://github.com/CodeSpaceHQ/SDA" target="_blank" id="view-source" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--accent mdl-color-text--accent-contrast">Github</a>
-        <script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
-    </body>
+        <div class="mdl-layout__tab-panel" id="proposal">
+          <div id="proposal-page"></div>
+          <script>
+            $("#proposal-page").load("html/proposal.html")
+          </script>
+        </div>
+        <div class="mdl-layout__tab-panel" id="funfacts">
+          <div id="funfacts-page"></div>
+          <script>
+            $("#funfacts-page").load("html/funfacts.html")
+          </script>
+        </div>
+        <div class="mdl-layout__tab-panel" id="maps">
+          <div id="maps-page"></div>
+          <script>
+            $("#maps-page").load("html/heatmaps.html")
+          </script>
+        </div>
+        <div class="mdl-layout__tab-panel" id="prediction">
+          <div id="prediction-page"></div>
+          <script>
+            $("#prediction-page").load("html/prediction.html")
+          </script>
+        </div>
+      </main>
+    </div>
+    <a href="https://github.com/CodeSpaceHQ/SDA" target="_blank" id="view-source" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--accent mdl-color-text--accent-contrast">Github</a>
+    <script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+
+
+  </body>
 
 </html>
