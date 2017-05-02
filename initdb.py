@@ -11,11 +11,11 @@ DB_NAME = "starbucksdb"
 TABLES = dict()
 TABLES['income'] = (
     "CREATE TABLE IF NOT EXISTS `income` ("
-    "   `STATEFIPS` char(2) NOT NULL,"
     "   `STATE` char(2) NOT NULL,"
     "   `ZIPCODE` char(5) NOT NULL,"
     "   `AGI_STUB` tinyint NOT NULL,"
     "   `NUM_RETURNS` float(15,4) NOT NULL,"
+    "   `NUMDEP` int NOT NULL,"
     "   `TOTAL_INCOME` float(15,4) NOT NULL,"
     "   PRIMARY KEY (`STATE`, `ZIPCODE`, `AGI_STUB`)"
     ") ENGINE=InnoDB")
@@ -69,7 +69,8 @@ VIEWS['diversity_view'] = ("CREATE VIEW `diversity_view`"
 VIEWS['population_view'] = ("CREATE VIEW `population_view`"
                             "(`STATE`, `ZIPCODE`, `POPULATION`) "
                             "AS "
-                            "SELECT state, zipcode, SUM(num_returns) "
+                            "SELECT state, zipcode, SUM(num_returns) + SUM("
+                            "numdep) "
                             "FROM income "
                             "WHERE num_returns > 0 "
                             "GROUP BY zipcode ")
