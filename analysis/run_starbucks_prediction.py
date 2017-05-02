@@ -10,7 +10,7 @@ import numpy
 
 INC_COLNAMES = ["income", "num_returns", "per_capita_income", "has_location"]
 SQL_INCOME = "SELECT SUM(i.TOTAL_INCOME) as total_income, i.NUM_RETURNS as num_returns, " \
-             "i.TOTAL_INCOME / i.NUM_RETURNS as per_capita_income, " \
+             "SUM(i.TOTAL_INCOME) / i.NUM_RETURNS as per_capita_income, " \
              "CASE " \
              "WHEN s.STORE_NUMBER IS NOT NULL THEN 1 " \
              "ELSE 0 " \
