@@ -59,7 +59,7 @@
                     <a href="#overview" class="mdl-layout__tab is-active">Overview</a>
                     <a href="#proposal" class="mdl-layout__tab">Proposal</a>
                     <a href="#funfacts" class="mdl-layout__tab">Fun Facts</a>
-
+                    <a href="#maps" class="mdl-layout__tab">Heat Maps</a>
                 </div>
             </header>
             <main class="mdl-layout__content">
@@ -219,7 +219,18 @@
                   <script>
                     $("#funfacts-page").load("html/funfacts.html")
                   </script>
-
+                </div>
+                <div class="mdl-layout__tab-panel" id="maps">
+                  <div id="maps-page"></div>
+                  <script>
+                    $("#maps-page").load("html/heatmaps.html")
+                  </script>
+                </div>
+                <div class="mdl-layout__tab-panel" id="prediction">
+                  <div id="prediction-page"></div>
+                  <script>
+                    $("#prediction-page").load("html/prediction.html")
+                  </script>
                 </div>
             </main>
         </div>
